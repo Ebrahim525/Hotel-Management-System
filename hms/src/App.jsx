@@ -15,8 +15,8 @@
       <>
         {/* <Login /> */}
         {/* <AdminDashboard /> */}
-        {/* <UserDashboard /> */}
-        <HotelManagerDashboard />
+        <UserDashboard />
+        {/* <HotelManagerDashboard /> */}
       </>
     )
   }
