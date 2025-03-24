@@ -30,8 +30,7 @@ const AdminDashboard = () => {
               <td>John Doe</td>
               <td>john@example.com</td>
               <td>
-                <button className="btn btn-warning">Verify</button>
-                <button className="btn btn-danger">Suspend</button>
+                <button className="btn btn-danger">Remove</button>
               </td>
             </tr>
             <tr>
@@ -39,8 +38,7 @@ const AdminDashboard = () => {
               <td>Jane Smith</td>
               <td>jane@example.com</td>
               <td>
-                <button className="btn btn-warning">Verify</button>
-                <button className="btn btn-danger">Suspend</button>
+                <button className="btn btn-danger">Remove</button>
               </td>
             </tr>
           </tbody>

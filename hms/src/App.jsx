@@ -3,6 +3,8 @@
   import viteLogo from '/vite.svg';
   import './App.css';
   import AdminDashboard from './pages/AdminDashboard';
+  import UserDashboard from './pages/UserDashboard';
+  import HotelManagerDashboard from './pages/HotelManager.jsx';
   import Login from './pages/Login';
 
 
@@ -12,7 +14,9 @@
     return (
       <>
         {/* <Login /> */}
-        <AdminDashboard />
+        {/* <AdminDashboard /> */}
+        {/* <UserDashboard /> */}
+        <HotelManagerDashboard />
       </>
     )
   }

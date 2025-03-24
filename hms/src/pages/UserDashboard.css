@@ -1,0 +1,168 @@
+.user-dashboard{
+    margin-top: -15px;
+}
+.user-dashboard .banner {
+    width: 100%;
+    padding: 15px 20px;
+    background: #a45c40;
+    color: white;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: "Playfair Display", serif;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .user-dashboard .home-btn {
+    font-size: 18px;
+    color: white;
+    text-decoration: none;
+    background: #8c4a30;
+    padding: 8px 15px;
+    border-radius: 6px;
+    transition: 0.3s;
+  }
+  
+  .user-dashboard .home-btn:hover {
+    background: #6b3625;
+  }
+  
+  .user-dashboard .sidebar {
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    background: #d4a373;
+    padding-top: 20px;
+    text-align: center;
+  }
+  
+  .user-dashboard .sidebar-link {
+    display: block;
+    font-weight: 600;
+    font-size: 18px;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: #d4a373;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .user-dashboard .sidebar-link:hover {
+    background: #6b3625;
+  }
+  
+  .user-dashboard .content {
+    margin-left: 270px;
+    margin-top: 90px;
+    padding: 20px;
+    width: calc(100% - 270px);
+  }
+  
+  /* Profile Section */
+  .profile-card {
+    background: #f8ede3;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    margin: 20px auto;
+    text-align: center;
+  }
+  
+  .profile-card p {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  
+  .edit-profile {
+    background-color: #a45c40;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    color: white;
+  }
+  
+  .account-settings {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8f0e3;
+    border-radius: 8px;
+    text-align: center;
+    width: 50%;
+    margin: auto;
+  }
+  
+  .account-settings h3 {
+    color: #a45c40;
+  }
+  
+  .change-password,
+  .delete-account {
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .change-password {
+    background: #8c4a30;
+    color: white;
+    margin-right: 10px;
+  }
+  
+  .delete-account {
+    background: #d9534f;
+    color: white;
+  }
+  
+  .change-password:hover {
+    background: #6b3625;
+  }
+  
+  .delete-account:hover {
+    background: #b52b27;
+  }
+  
+  /* Status Badges */
+  .status.approved {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .status.pending {
+    color: orange;
+    font-weight: bold;
+  }
+  
+  .available {
+    color: green;
+  }
+  
+  .booked {
+    color: red;
+  }
+  
+  .add-hotel {
+    background: #5a8f4f;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+  }
+  
+  .search-btn {
+    background: #8c4a30;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+  }
+  

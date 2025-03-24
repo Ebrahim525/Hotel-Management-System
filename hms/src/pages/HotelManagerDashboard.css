@@ -1,0 +1,124 @@
+.admin-dashboard .banner {
+    width: 100%;
+    padding: 15px 20px;
+    background: #a45c40;
+    color: white;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: "Playfair Display", serif;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .admin-dashboard .home-btn {
+    font-size: 18px;
+    color: white;
+    text-decoration: none;
+    background: #8c4a30;
+    padding: 8px 15px;
+    border-radius: 6px;
+    transition: 0.3s ease-in-out;
+  }
+  
+  .admin-dashboard .home-btn:hover {
+    background: #6b3625;
+  }
+  
+  .admin-dashboard .sidebar {
+    margin-top: -15px;
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    background: #d4a373;
+    padding-top: 20px;
+    text-align: center;
+  }
+  
+  .admin-dashboard .sidebar-link {
+    display: block;
+    font-weight: 600;
+    font-size: 18px;
+    color: white;
+    padding: 12px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: #d4a373;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .admin-dashboard .sidebar-link:hover {
+    background: #6b3625;
+  }
+  
+  .admin-dashboard .content {
+    margin-left: 270px;
+    margin-top: 90px;
+    padding: 20px;
+    width: calc(100% - 270px);
+  }
+  
+  .admin-dashboard .btn-warning {
+    color: #3D2B1F;
+    font-size: 16px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    width: auto;
+    margin-right: 5px;
+  }
+  
+  .admin-dashboard .btn-danger {
+    color: white;
+    font-size: 16px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    width: auto;
+    margin-left: 5px;
+  }
+  
+  .admin-dashboard .btn-success {
+    background: #4caf50;
+    font-size: 16px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  
+  .profile-card {
+    background: #f8ede3;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .profile-card p {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  
+  .profile-card .btn-primary {
+    background-color: #a45c40;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 6px;
+    color: white;
+  }
+.ProfilePh {
+    border-radius: 50%;
+    width: 25vh;
+}
