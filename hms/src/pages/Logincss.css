@@ -1,4 +1,4 @@
-.backimage {
+.login-page .backimage {
     height: 98vh;
     width: 99%;
     background-image: url(./Images/Background.jpg);
@@ -19,10 +19,10 @@
     align-items: center;
 }
 
-.container {
+.login-page .lgcontainer {
     background-color: #964b00;
     color: #dbcf5c;
-    width: 300px;
+    width: 350px;
     padding: 20px;
     text-align: center;
     border-radius: 10px;
@@ -31,21 +31,21 @@
     transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
-.slide-in {
+.login-page .lgslide-in {
     transform: translateX(10px);
 }
 
-.slide-out {
+.login-page .lgslide-out {
     transform: translateX(-5px);
 }
 
-h2 {
+.login-page h2 {
     margin-bottom: 20px;
 }
 
-input {
+.login-page input {
     background-color: #F4F4F4;
-    width: 90%;
+    width: 100%;
     padding: 12px;
     margin: 10px 0;
     border: 1px solid #ccc;
@@ -53,7 +53,7 @@ input {
     outline: none;
 }
 
-button {
+.login-page button {
     width: 100%;
     padding: 12px;
     background-color: #61311a;
@@ -64,26 +64,26 @@ button {
     font-weight: bold;
 }
 
-button:hover {
+.login-page button:hover {
     background-color: #4e2310;
 }
 
-p {
+.login-page p {
     margin-top: 15px;
     font-size: 14px;
 }
 
-a {
+.login-page a {
     color: #FFD700;
     text-decoration: none;
 }
 
-a:hover {
+.login-page a:hover {
     text-decoration: underline;
     color: #ff2a00;
 }
 
-select {
+.login-page select {
     background-color: #F4F4F4;
     color: #6a6363;
     width: 100%;

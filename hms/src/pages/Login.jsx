@@ -7,7 +7,7 @@ function Login() {
     return (
         <div className='login-page'>
             <div className='backimage'></div>
-            <div className={`container ${isRegister ? 'slide-in' : 'slide-out'}`}>
+            <div className={`lgcontainer ${isRegister ? 'lgslide-in' : 'lgslide-out'}`}>
                 <h2>{isRegister ? 'Register' : 'Log In'}</h2>
                 
                 {isRegister ? (

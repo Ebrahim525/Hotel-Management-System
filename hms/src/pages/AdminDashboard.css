@@ -1,92 +1,85 @@
-body {
-    font-family: "Poppins", sans-serif;
-    background: #f8ede3;
-    color: #3d2b1f;
-  }
+.admin-dashboard .banner {
+  width: 100%;
+  padding: 15px 20px;
+  background: #a45c40;
+  color: white;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: "Playfair Display", serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
   
-  .banner {
-    width: 100%;
-    padding: 15px 20px;
-    background: #a45c40;
-    color: white;
-    text-align: center;
-    font-size: 30px;
-    font-weight: bold;
-    font-family: "Playfair Display", serif;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+.admin-dashboard .home-btn {
+  font-size: 18px;
+  color: white;
+  text-decoration: none;
+  background: #8c4a30;
+  padding: 8px 15px;
+  border-radius: 6px;
+  transition: 0.3s ease-in-out;
+}
   
-  .home-btn {
-    font-size: 18px;
-    color: white;
-    text-decoration: none;
-    background: #8c4a30;
-    padding: 8px 15px;
-    border-radius: 6px;
-    transition: 0.3s ease-in-out;
-  }
+.admin-dashboard .home-btn:hover {
+  background: #6b3625;
+}
   
-  .home-btn:hover {
-    background: #6b3625;
-  }
+.admin-dashboard .sidebar {
+  margin-top: -15px;
+  height: 100vh;
+  width: 250px;
+  position: fixed;
+  background: #d4a373;
+  padding-top: 20px;
+  text-align: center;
+}
   
-  .sidebar {
-    /* margin-top: 70px; */
-    margin-top: -15px;
-    height: 100vh;
-    width: 250px;
-    position: fixed;
-    background: #d4a373;
-    padding-top: 20px;
-    text-align: center;
-  }
+.admin-dashboard .sidebar-link {
+  display: block;
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+  padding: 12px;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: #d4a373;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
   
-  .sidebar-link {
-    display: block;
-    font-weight: 600;
-    font-size: 18px;
-    color: white;
-    padding: 12px;
-    text-decoration: none;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    background: #d4a373;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-  }
+.admin-dashboard .sidebar-link:hover {
+  background: #6b3625;
+}
   
-  .sidebar-link:hover {
-    background: #6b3625;
-  }
-  
-  .content {
-    margin-left: 270px;
-    margin-top: 90px;
-    padding: 20px;
-    width: calc(100% - 270px);
-  }
-
-.btn-warning {
-    color: #3D2B1F;
-    font-size: 16px;
-    padding: 10px 16px;
-    border-radius: 8px;
-    width: auto;
-    margin-right: 5px;
+.admin-dashboard .content {
+  margin-left: 270px;
+  margin-top: 90px;
+  padding: 20px;
+  width: calc(100% - 270px);
 }
 
-.btn-danger {
-    color: white;
-    font-size: 16px;
-    padding: 10px 16px;
-    border-radius: 8px;
-    width: auto;
-    margin-left: 5px;
+.admin-dashboard .btn-warning {
+  color: #3D2B1F;
+  font-size: 16px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  width: auto;
+  margin-right: 5px;
+}
+
+.admin-dashboard .btn-danger {
+  color: white;
+  font-size: 16px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  width: auto;
+  margin-left: 5px;
 }
