@@ -20,8 +20,8 @@ function Login() {
                         <input type="email" placeholder="Email" required />
                         <select required>
                             <option value="">Select User Type</option>
-                            <option value="Guest">Student</option>
-                            <option value="Hotel Manager">Staff</option>
+                            <option value="Guest">Guest</option>
+                            <option value="Hotel Manager">Hotel Manager</option>
                         </select>
                         <button type="submit">Register</button>
                     </form>
