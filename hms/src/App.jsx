@@ -1,58 +1,40 @@
-  import { useState } from 'react';
-  import reactLogo from './assets/react.svg';
-  import viteLogo from '/vite.svg';
-  import './App.css';
-  import AdminDashboard from './pages/AdminDashboard';
-  import UserDashboard from './pages/UserDashboard';
-  import HotelManagerDashboard from './pages/HotelManager.jsx';
-  import Login from './pages/Login';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import './App.css';
+import AdminDashboard from './pages/AdminDashboard';
+import UserDashboard from './pages/UserDashboard';
+import HotelManagerDashboard from './pages/HotelManager';
+import Login from './pages/Login';
 
+function Navbar() {
+  return (
+    <nav>
+      <Link to="/" className="nav-link">Login</Link> | 
+      <Link to="/admin" className="nav-link">Admin Dashboard</Link> | 
+      <Link to="/user" className="nav-link">User Dashboard</Link> | 
+      <Link to="/manager" className="nav-link">Hotel Manager</Link>
+    </nav>
+  );
+}
 
-  function App() {
-    const [count, setCount] = useState(0)
+function App() {
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        {/* Route for Login */}
+        <Route path="/" element={<Login />} />
 
-    return (
-      <>
-        <Login />
-        {/* <AdminDashboard /> */}
-        {/* <UserDashboard /> */}
-        {/* <HotelManagerDashboard /> */}
-      </>
-    )
-  }
+        {/* Route for Admin Dashboard */}
+        <Route path="/admin" element={<AdminDashboard />} />
 
-  export default App
+        {/* Route for User Dashboard */}
+        <Route path="/guest" element={<UserDashboard />} />
 
-  // import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-// import './App.css';
-// import AdminDashboard from './pages/AdminDashboard';
-// import UserDashboard from './pages/UserDashboard';
-// import HotelManagerDashboard from './pages/HotelManager';
-// import Login from './pages/Login';
+        {/* Route for Hotel Manager Dashboard */}
+        <Route path="/manager" element={<HotelManagerDashboard />} />
+      </Routes>
+    </Router>
+  );
+}
 
-// function Navbar() {
-//   return (
-//     <nav>
-//       <Link to="/">Login</Link> | 
-//       <Link to="/admin">Admin Dashboard</Link> | 
-//       <Link to="/user">User Dashboard</Link> | 
-//       <Link to="/manager">Hotel Manager</Link>
-//     </nav>
-//   );
-// }
-
-// function App() {
-//   return (
-//     <Router>
-//       <Navbar />
-//       <Routes>
-//         <Route path="/" element={<Login />} />
-//         <Route path="/admin" element={<AdminDashboard />} />
-//         <Route path="/user" element={<UserDashboard />} />
-//         <Route path="/manager" element={<HotelManagerDashboard />} />
-//       </Routes>
-//     </Router>
-//   );
-// }
-
-// export default App;
+export default App;

@@ -1,3 +1,25 @@
+nav {
+  background-color: #333;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  z-index: 5;
+}
+
+.nav-link {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+
 /* #root {
   max-width: 1280px;
   margin: 0 auto;
