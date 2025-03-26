@@ -19,7 +19,7 @@ function Navbar() {
 function App() {
   return (
     <Router>
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
         {/* Route for Login */}
         <Route path="/" element={<Login />} />
