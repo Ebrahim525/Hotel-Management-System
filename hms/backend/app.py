@@ -4,7 +4,8 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_migrate import Migrate
 from models.models import db, User
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
+
 
 app = Flask(__name__)
 
@@ -31,14 +32,14 @@ def login():
     email = data.get('email')
     password = data.get('password')
 
-    # Check if user exists
     user = User.query.filter_by(email=email).first()
 
     if user and bcrypt.check_password_hash(user.password, password):
-        # Create JWT token
-        access_token = create_access_token(identity={'email': user.email, 'usertype': user.usertype})
-        
-        # Return token and redirect URL
+        access_token = create_access_token(
+            identity=user.email,
+            additional_claims={"usertype": user.usertype}
+        )
+
         return jsonify({
             "message": "Login successful!",
             "access_token": access_token,
@@ -46,6 +47,7 @@ def login():
         })
     else:
         return jsonify({"error": "Invalid email or password"}), 401
+
 
 
 @app.route('/register', methods=['POST'])
@@ -83,13 +85,14 @@ def register():
 @app.route('/admin', methods=['GET'])
 @jwt_required()
 def admin_dashboard():
-    # Get user identity from token
     current_user = get_jwt_identity()
-
-    if current_user['usertype'] == "Admin":
+    claims = get_jwt()
+    usertype = claims.get("usertype")
+    if usertype == "Admin":
         return jsonify({"message": "Welcome to the Admin Dashboard!"})
     else:
         return jsonify({"error": "Unauthorized access!"}), 403
+
 
 
 @app.route('/manager')

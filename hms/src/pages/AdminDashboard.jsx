@@ -114,18 +114,20 @@ function AdminDashboard() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+  
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get("/admin/dashboard");
+        const response = await axiosInstance.get("/admin");
         setMessage(response.data.message);
       } catch (error) {
-        console.error("Error fetching data:", error);
         setMessage("Unauthorized. Please login again.");
       }
     };
-
+  
     fetchData();
   }, []);
+  
 
   return (
     <div>
