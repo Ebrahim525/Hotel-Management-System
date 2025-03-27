@@ -43,7 +43,7 @@ class Room(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     room_type = db.Column(db.String(50), nullable=False)
     price_per_night = db.Column(db.Float, nullable=False)
-    availability = db.Column(db.Boolean, default=True)
+    availability = db.Column(db.Integer, default=True)
     date_uploaded = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     # Foreign key
