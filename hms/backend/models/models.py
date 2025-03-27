@@ -12,7 +12,6 @@ class User(db.Model):
     phone_number = db.Column(db.String(15))
     usertype = db.Column(db.String(20))  # Admin/Manager/Guest
     date_registered = db.Column(db.DateTime, default=db.func.current_timestamp())
-    admin_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # Admin who registered
 
     # Relationships
     bookings = db.relationship('Booking', backref='user', lazy=True)
@@ -32,6 +31,7 @@ class Booking(db.Model):
     # Foreign keys
     room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    hotel_id = db.Column(db.Integer, db.ForeignKey('hotel.id'), nullable=False)  # New field
 
     # Relationships
     payments = db.relationship('Payment', backref='booking', lazy=True)
@@ -44,7 +44,6 @@ class Room(db.Model):
     room_type = db.Column(db.String(50), nullable=False)
     price_per_night = db.Column(db.Float, nullable=False)
     availability = db.Column(db.Boolean, default=True)
-    capacity = db.Column(db.Integer, nullable=False)
     date_uploaded = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     # Foreign key

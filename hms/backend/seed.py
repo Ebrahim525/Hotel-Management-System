@@ -60,14 +60,12 @@ with app.app_context():
         room_type="Deluxe",
         price_per_night=150.0,
         availability=True,
-        capacity=2,
         hotel_id=hotel1.id
     )
     room2 = Room(
         room_type="Suite",
         price_per_night=250.0,
         availability=True,
-        capacity=4,
         hotel_id=hotel2.id
     )
 
@@ -82,7 +80,8 @@ with app.app_context():
         check_in_date=datetime.strptime("2025-04-01", "%Y-%m-%d").date(),
         check_out_date=datetime.strptime("2025-04-05", "%Y-%m-%d").date(),
         room_id=room1.id,
-        user_id=guest_user.id
+        user_id=guest_user.id,
+        hotel_id=hotel1.id
     )
 
     db.session.add(booking1)

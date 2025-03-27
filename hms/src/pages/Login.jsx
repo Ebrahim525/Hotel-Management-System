@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import "./Logincss.css";
 
+
+
 function Login() {
   const [isRegister, setIsRegister] = useState(false);
   const [formData, setFormData] = useState({
@@ -11,6 +13,8 @@ function Login() {
     phone_number: "",
     usertype: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   // Handle Input Change
   const handleChange = (e) => {
@@ -104,14 +108,27 @@ function Login() {
             onChange={handleChange}
             required
           />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          <div className="password-container">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <span
+              className="password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <i className="fas fa-eye-slash"></i> // Eye-slash when visible
+              ) : (
+                <i className="fas fa-eye"></i> // Eye when hidden
+              )}
+            </span>
+          </div>
+
           <button type="submit">{isRegister ? "Register" : "Login"}</button>
         </form>
 
