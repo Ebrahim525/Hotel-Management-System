@@ -70,9 +70,9 @@ const UserDashboard = () => {
   };
 
   // Handle star rating selection
-  const handleStarClick = (id, star) => {
-    setRatings((prevRatings) => ({ ...prevRatings, [id]: star }));
-  };
+  // const handleStarClick = (id, star) => {
+  //   setRatings((prevRatings) => ({ ...prevRatings, [id]: star }));
+  // };
 
   const handleStarClick = (id, rating) => {
     setRatings((prev) => ({
@@ -343,6 +343,7 @@ const UserDashboard = () => {
       <div className="sidebar">
         <button className="sidebar-link" onClick={() => setPage("profile")}>Profile</button>
         <button className="sidebar-link" onClick={() => setPage("bookings")}>Bookings</button>
+        <button className="sidebar-link" onClick={() => setPage("searchHotel")}>Search Hotel</button>
       </div>
 
       <div className="content">{content[page]}</div>
