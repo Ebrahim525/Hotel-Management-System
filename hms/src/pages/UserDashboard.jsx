@@ -3,31 +3,85 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./UserDashboard.css";
 import profilePhoto from "./Images/profile.png";
 
-
-const toggleReviewInput = (id) => {
-  setReviewInputs((prev) => ({
-    ...prev,
-    [id]: !prev[id], // Toggle review input visibility
-  }));
-};
-
 const UserDashboard = () => {
   const [page, setPage] = useState("profile");
-  const [reviewInputs, setReviewInputs] = useState({}); // Track review input states
-  const [ratings, setRatings] = useState({});
 
-  const toggleReviewInput = (id) => {
-    setReviewInputs((prev) => ({
-      ...prev,
-      [id]: !prev[id], // Toggle visibility
-    }));
+  // Profile state
+  const [isEditing, setIsEditing] = useState(false);
+  const [userProfile, setUserProfile] = useState({
+    fullName: "John Doe",
+    email: "john@example.com",
+  });
+
+  // Handle profile input changes
+  const handleProfileChange = (e) => {
+    setUserProfile({ ...userProfile, [e.target.name]: e.target.value });
   };
 
-  const handleStarClick = (id, rating) => {
-    setRatings((prev) => ({
-      ...prev,
-      [id]: rating, // Set rating for specific booking
-    }));
+  // Toggle edit mode
+  const toggleEditProfile = () => {
+    setIsEditing(!isEditing);
+  };
+
+  // Save profile changes
+  const saveProfileChanges = () => {
+    setIsEditing(false);
+  };
+
+  // Dummy data for bookings
+  const [bookings, setBookings] = useState([
+    { id: 1, hotel: "Urban Stay", room: "#R101", type: "Deluxe", date: "2025-03-20", status: "Confirmed" },
+    { id: 2, hotel: "City View Hotel", room: "#R301", type: "Standard", date: "2025-02-15", status: "Confirmed" }
+  ]);
+
+  // Track which booking is being modified
+  const [editingBooking, setEditingBooking] = useState(null);
+
+  // Dummy data for booking history
+  const [bookingHistory, setBookingHistory] = useState([
+    { id: 3, hotel: "City View Hotel", room: "#R301", type: "Standard", date: "2025-02-15", review: "", rating: 0 },
+    { id: 4, hotel: "Mountain Resort", room: "#R404", type: "Executive", date: "2025-01-30", review: "", rating: 0 }
+  ]);
+
+  // Track which review input is being shown
+  const [reviewInputs, setReviewInputs] = useState({});
+  const [ratings, setRatings] = useState({});
+
+  // Enable modify mode
+  const handleModifyClick = (booking) => {
+    setEditingBooking(booking.id);
+  };
+
+  // Update booking details when modified
+  const handleBookingChange = (id, field, value) => {
+    setBookings((prevBookings) =>
+      prevBookings.map((b) => (b.id === id ? { ...b, [field]: value } : b))
+    );
+  };
+
+  // Save the modified booking
+  const handleSaveClick = () => {
+    setEditingBooking(null);
+  };
+
+  // Toggle review input visibility
+  const toggleReviewInput = (id) => {
+    setReviewInputs((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  // Handle star rating selection
+  const handleStarClick = (id, star) => {
+    setRatings((prevRatings) => ({ ...prevRatings, [id]: star }));
+  };
+
+  // Submit review
+  const handleSubmitReview = (id, reviewText) => {
+    setBookingHistory((prevHistory) =>
+      prevHistory.map((b) =>
+        b.id === id ? { ...b, review: reviewText, rating: ratings[id] || 0 } : b
+      )
+    );
+    setReviewInputs((prev) => ({ ...prev, [id]: false }));
   };
 
   const content = {
@@ -35,16 +89,40 @@ const UserDashboard = () => {
       <div className="profile-section">
         <h2>Profile Overview</h2>
         <div className="profile-card">
-          <img className="ProfilePh" src={profilePhoto} alt="Profile Photo" />
-          <p><strong>Full Name:</strong> John Doe</p>
-          <p><strong>Email Address:</strong> john@example.com</p>
-          <button className="btn edit-profile">Edit Profile</button>
-        </div>
+          <img className="ProfilePh" src={profilePhoto} alt="Profile" />
+          <p><strong>Full Name:</strong> 
+            {isEditing ? (
+              <input
+                type="text"
+                name="fullName"
+                value={userProfile.fullName}
+                onChange={handleProfileChange}
+              />
+            ) : (
+              userProfile.fullName
+            )}
+          </p>
+          <p><strong>Email Address:</strong> 
+            {isEditing ? (
+              <input
+                type="email"
+                name="email"
+                value={userProfile.email}
+                onChange={handleProfileChange}
+              />
+            ) : (
+              userProfile.email
+            )}
+          </p>
 
-        <div className="account-settings">
-          <h3>Account Settings</h3>
-          <button className="btn change-password">Change Password</button>
-          <button className="btn delete-account">Delete Account</button>
+          {isEditing ? (
+            <>
+              <button className="btn save-profile" onClick={saveProfileChanges}>Save</button>
+              <button className="btn cancel-profile" onClick={toggleEditProfile}>Cancel</button>
+            </>
+          ) : (
+            <button className="btn edit-profile" onClick={toggleEditProfile}>Edit Profile</button>
+          )}
         </div>
       </div>
     ),
@@ -64,14 +142,42 @@ const UserDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Urban Stay</td>
-              <td>#R101</td>
-              <td>Deluxe</td>
-              <td>2025-03-20</td>
-              <td className="status approved">Confirmed</td>
-              <td><button className="btn modify-btn">Modify</button></td>
-            </tr>
+            {bookings.map((booking) => (
+              <tr key={booking.id}>
+                <td>{booking.hotel}</td>
+                <td>{booking.room}</td>
+                <td>
+                  {editingBooking === booking.id ? (
+                    <input
+                      type="text"
+                      value={booking.type}
+                      onChange={(e) => handleBookingChange(booking.id, "type", e.target.value)}
+                    />
+                  ) : (
+                    booking.type
+                  )}
+                </td>
+                <td>
+                  {editingBooking === booking.id ? (
+                    <input
+                      type="date"
+                      value={booking.date}
+                      onChange={(e) => handleBookingChange(booking.id, "date", e.target.value)}
+                    />
+                  ) : (
+                    booking.date
+                  )}
+                </td>
+                <td className="status approved">{booking.status}</td>
+                <td>
+                  {editingBooking === booking.id ? (
+                    <button className="btn save-btn" onClick={handleSaveClick}>Save</button>
+                  ) : (
+                    <button className="btn modify-btn" onClick={() => handleModifyClick(booking)}>Modify</button>
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
 
@@ -88,55 +194,36 @@ const UserDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {[{ id: 1, hotel: "City View Hotel", room: "#R301", type: "Standard", date: "2025-02-15" },
-              { id: 2, hotel: "Mountain Resort", room: "#R404", type: "Executive", date: "2025-01-30" }
-            ].map((booking) => (
+            {bookingHistory.map((booking) => (
               <tr key={booking.id}>
                 <td>{booking.hotel}</td>
                 <td>{booking.room}</td>
                 <td>{booking.type}</td>
                 <td>{booking.date}</td>
                 <td>
-                  <button className="btn review-btn" onClick={() => toggleReviewInput(booking.id)}>Review</button>
-                  {reviewInputs[booking.id] && (
-  <div className="review-section">
-    {/* Star Rating */}
-    <div className="stars">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span
-          key={star}
-          className={`star ${ratings[booking.id] >= star ? "selected" : ""}`}
-          onClick={() => handleStarClick(booking.id, star)}
-        >
-          ★
-        </span>
-      ))}
-    </div>
-
-    {/* Review Input Field */}
-    <input type="text" placeholder="Write a review..." className="form-control" />
-
-    {/* Buttons: Submit & Cancel */}
-    <div className="review-buttons">
-      <button className="btn submit-review" onClick={() => toggleReviewInput(booking.id)}>Submit</button>
-      <button className="btn cancel-review" onClick={() => toggleReviewInput(booking.id)}>Cancel</button>
-    </div>
-  </div>
-)}
-
+                  {booking.review ? (
+                    <span>{booking.review} - ⭐ {booking.rating}</span>
+                  ) : (
+                    <>
+                      <button className="btn review-btn" onClick={() => toggleReviewInput(booking.id)}>Review</button>
+                      {reviewInputs[booking.id] && (
+                        <div className="review-section">
+                          <input
+                            type="text"
+                            placeholder="Write a review..."
+                            className="form-control"
+                            onChange={(e) => handleSubmitReview(booking.id, e.target.value)}
+                          />
+                          <button className="btn submit-review" onClick={() => handleSubmitReview(booking.id, document.querySelector('.review-section input').value)}>Submit</button>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
-    ),
-
-    searchHotel: (
-      <div className="search-hotels">
-        <h2>Search for Hotels</h2>
-        <input type="text" className="form-control" placeholder="Enter hotel name..." />
-        <button className="btn search-btn mt-2">Search</button>
       </div>
     ),
   };
@@ -151,7 +238,6 @@ const UserDashboard = () => {
       <div className="sidebar">
         <button className="sidebar-link" onClick={() => setPage("profile")}>Profile</button>
         <button className="sidebar-link" onClick={() => setPage("bookings")}>Bookings</button>
-        <button className="sidebar-link" onClick={() => setPage("searchHotel")}>Search Hotels</button>
       </div>
 
       <div className="content">{content[page]}</div>
