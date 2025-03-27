@@ -102,6 +102,7 @@ const UserDashboard = () => {
         <table className="table">
           <thead>
             <tr>
+              
               <th>Hotel Name</th>
               <th>Room ID</th>
               <th>Room Type</th>
