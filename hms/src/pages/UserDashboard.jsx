@@ -30,6 +30,28 @@ const UserDashboard = () => {
     }));
   };
 
+  const sampleHotels = [
+    { id: 1, name: "Urban Stay", location: "New York", rooms: 5, checkIn: "2025-03-20", checkOut: "2025-03-25" },
+    { id: 2, name: "Mountain Resort", location: "Denver", rooms: 3, checkIn: "2025-04-10", checkOut: "2025-04-15" },
+    { id: 3, name: "Ocean Breeze", location: "Miami", rooms: 2, checkIn: "2025-05-01", checkOut: "2025-05-05" }
+  ];
+
+  const handleSearch = () => {
+    const name = document.getElementById("hotelName").value.toLowerCase();
+    const location = document.getElementById("location").value.toLowerCase();
+    const rooms = parseInt(document.getElementById("rooms").value, 10);
+  
+    const results = sampleHotels.filter(hotel =>
+      (name === "" || hotel.name.toLowerCase().includes(name)) &&
+      (location === "" || hotel.location.toLowerCase().includes(location)) &&
+      (!rooms || hotel.rooms >= rooms)
+    );
+  
+    setFilteredHotels(results);
+  };  
+
+  const [filteredHotels, setFilteredHotels] = useState([]);
+
   const content = {
     profile: (
       <div className="profile-section">
@@ -135,11 +157,88 @@ const UserDashboard = () => {
     searchHotel: (
       <div className="search-hotels">
         <h2>Search for Hotels</h2>
-        <input type="text" className="form-control" placeholder="Enter hotel name..." />
-        <button className="btn search-btn mt-2">Search</button>
+    
+        <div className="search-filters">
+          <div className="input-group">
+            <div className="form-floating">
+              <input type="text" className="form-control" id="hotelName" placeholder="Hotel Name" />
+              <label htmlFor="hotelName">Hotel Name</label>
+            </div>
+    
+            <div className="form-floating">
+              <input type="date" className="form-control" id="checkIn" placeholder="Check-in Date" />
+              <label htmlFor="checkIn">Check-in</label>
+            </div>
+    
+            <div className="form-floating">
+              <input type="date" className="form-control" id="checkOut" placeholder="Check-out Date" />
+              <label htmlFor="checkOut">Check-out</label>
+            </div>
+    
+            <div className="form-floating">
+              <input type="text" className="form-control" id="location" placeholder="Location" />
+              <label htmlFor="location">Location</label>
+            </div>
+    
+            <div className="form-floating">
+              <input type="number" className="form-control" id="rooms" placeholder="Rooms" min="1" />
+              <label htmlFor="rooms">Rooms</label>
+            </div>
+    
+            <button className="btn btn-primary btn-lg" onClick={handleSearch}>
+              Search
+            </button>
+          </div>
+        </div>
+    
+        {/* Search Results */}
+        {filteredHotels.length > 0 && (
+  <div className="search-results">
+    <h3>Search Results</h3>
+    <table className="table">
+      <thead>
+        <tr>
+          <th>Hotel Name</th>
+          <th>Location</th>
+          <th>Rooms Available</th>
+          <th>Check-in</th>
+          <th>Check-out</th>
+          <th>  </th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredHotels.map((hotel) => (
+          <tr key={hotel.id}>
+            <td>{hotel.name}</td>
+            <td>{hotel.location}</td>
+            <td>{hotel.rooms}</td>
+            <td>{hotel.checkIn}</td>
+            <td>{hotel.checkOut}</td>
+            <td>
+              <button 
+                className="btn btn-success"
+                onClick={() => handleBook(hotel)}
+              >
+                Book Now
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
       </div>
     ),
   };
+
+  const handleBook = (hotel) => {
+    alert(`Booking confirmed for ${hotel.name} from ${hotel.checkIn} to ${hotel.checkOut}!`);
+    
+    // Optional: Add booking logic here if you want to store it in state or database
+  };
+  
 
   return (
     <div className="user-dashboard">

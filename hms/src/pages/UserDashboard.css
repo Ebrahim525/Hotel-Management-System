@@ -166,6 +166,132 @@
     border-radius: 6px;
   }
   
+  .search-hotels {
+    background: #f8f0e3;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.search-filters {
+    display: flex;
+    flex-wrap: wrap; /* Improved responsiveness */
+    gap: 15px; /* Slightly larger gap for improved spacing */
+    align-items: center;
+}
+
+.input-group {
+    display: flex;
+    flex: 1 1 300px; /* Balanced sizing */
+    gap: 10px;
+}
+
+.form-floating {
+    flex: 1;
+    min-width: 200px; /* Prevents fields from shrinking too small */
+}
+
+.form-control {
+    font-size: 15px; /* Improved readability */
+    padding: 12px 15px;
+    border: 2px solid #d4a373;
+    border-radius: 8px;
+    transition: border 0.3s;
+}
+
+.form-control:focus {
+    border-color: #a45c40;
+    outline: none;
+}
+
+.btn-lg {
+    font-size: 16px;
+    padding: 12px 24px; /* Larger and more prominent */
+    background: #a45c40;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn-lg:hover {
+    background: #6b3625;
+    transform: scale(1.05); /* Subtle hover effect */
+}
+
+.search-results table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.search-results th,
+.search-results td {
+  border: 1px solid #d4a373;
+  padding: 12px 15px;
+  text-align: center;
+}
+
+.search-results th {
+  background: #a45c40;
+  color: #fff;
+  font-weight: bold;
+}
+
+.search-results tr:nth-child(even) {
+  background-color: #f8ede3; /* Alternating row color */
+}
+
+.search-results tr:hover {
+  background-color: #f0d8c2; /* Highlight row on hover */
+}
+
+.book-now-btn {
+  background: #5a8f4f;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.book-now-btn:hover {
+  background: #3d6e35;
+  transform: scale(1.05); /* Slight zoom effect */
+}
+
+@media (max-width: 768px) {
+  .search-filters {
+      flex-direction: column;  /* Stack filters vertically */
+      gap: 10px;
+  }
+
+  .input-group {
+      width: 100%;
+  }
+
+  .btn-lg {
+      width: 100%; /* Full-width search button on smaller screens */
+  }
+
+  .search-results th,
+  .search-results td {
+      padding: 10px; /* Reduced padding for smaller screens */
+  }
+}
+
+.search-hotels {
+  background: linear-gradient(135deg, #f8f0e3, #f4e3d8);
+  border: 2px solid #d4a373;
+}
+
+.form-control:hover {
+  background-color: #fff5ee;
+  border-color: #a45c40;
+}
+
 
   /* Modify Button */
 .modify-btn {
