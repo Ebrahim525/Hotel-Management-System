@@ -3,8 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_migrate import Migrate
-from models.models import *
+from models.models import db, User
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
+from admin.routes import admin_bp
 
 
 app = Flask(__name__)
@@ -20,6 +21,9 @@ bcrypt = Bcrypt(app)
 CORS(app)
 migrate = Migrate(app, db)
 jwt = JWTManager(app)
+
+app.register_blueprint(admin_bp, url_prefix='/admin')
+
 
 @app.route('/')
 def home():
@@ -62,6 +66,9 @@ def register():
     # Check if username or email is missing
     if not username or not email or not password:
         return jsonify({"error": "Username, email, and password are required!"}), 400
+
+    if usertype == "Admin":
+        return jsonify({"error": "Cannot Register Admin"}), 400
 
     # Check if user already exists
     existing_user = User.query.filter_by(email=email).first()

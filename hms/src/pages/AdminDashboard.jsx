@@ -7,13 +7,15 @@ function AdminDashboard() {
   const [message, setMessage] = useState("");
   const [page, setPage] = useState("home");
   const [successMessage, setSuccessMessage] = useState("");
+  //
+  
 
   // User data
   const [users, setUsers] = useState([
-    { id: 101, name: "John Doe", email: "john@example.com" },
-    { id: 102, name: "Jane Smith", email: "jane@example.com" },
-    { id: 103, name: "Alice Johnson", email: "alice@example.com" },
-    { id: 104, name: "Bob Brown", email: "bob@example.com" },
+    // { id: 101, name: "John Doe", email: "john@example.com" },
+    // { id: 102, name: "Jane Smith", email: "jane@example.com" },
+    // { id: 103, name: "Alice Johnson", email: "alice@example.com" },
+    // { id: 104, name: "Bob Brown", email: "bob@example.com" },
   ]);
 
   // Hotel data
@@ -22,24 +24,78 @@ function AdminDashboard() {
     { id: "H002", name: "Cozy Stay", owner: "Emily Davis", status: "Pending" },
   ]);
 
+  // Search states
+  const [userSearchQuery, setUserSearchQuery] = useState("");
+  const [hotelSearchQuery, setHotelSearchQuery] = useState("");
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUsers = async () => {
       try {
-        const response = await axiosInstance.get("/admin");
-        setMessage(response.data.message);
+        const response = await axiosInstance.get("/admin/users"); // Correct API
+        console.log("Api Res:", response.data);
+        setUsers(response.data.users || []); // Set fetched users
+        setMessage("Welcome to the Admin Dashboard!");
       } catch (error) {
-        setMessage("Unauthorized. Please login again.");
+        console.error("Error:", error.response || error);
+        setMessage("Failed to load user data. Please login again.");
       }
     };
-    fetchData();
+  
+    fetchUsers();
   }, []);
 
+  // Handle User Search
+  const handleUserSearch = (e) => {
+    setUserSearchQuery(e.target.value.toLowerCase());
+  };
+
+  // Filtered User List
+  const filteredUsers = users.filter(
+    (user) =>
+      user.id.toString().includes(userSearchQuery) ||
+      user.username.toLowerCase().includes(userSearchQuery) ||
+      user.email.toLowerCase().includes(userSearchQuery)
+  );
+
+  // Handle Hotel Search
+  const handleHotelSearch = (e) => {
+    setHotelSearchQuery(e.target.value.toLowerCase());
+  };
+
+  // Filtered Hotel List
+  const filteredHotels = hotels.filter(
+    (hotel) =>
+      hotel.id.toLowerCase().includes(hotelSearchQuery) ||
+      hotel.name.toLowerCase().includes(hotelSearchQuery) ||
+      hotel.owner.toLowerCase().includes(hotelSearchQuery) ||
+      hotel.status.toLowerCase().includes(hotelSearchQuery)
+  );
+
   // Remove user
-  const handleRemoveUser = (id) => {
-    setUsers(users.filter((user) => user.id !== id));
-    setSuccessMessage(`User with ID #${id} was successfully removed.`);
+  // const handleRemoveUser = (id) => {
+  //   setUsers(users.filter((user) => user.id !== id));
+  //   setSuccessMessage("User with ID #${id} was successfully removed.");
+  //   setTimeout(() => setSuccessMessage(""), 3000);
+  // };
+  // Remove user with API call
+  const handleRemoveUser = async (id) => {
+    try {
+      const response = await axiosInstance.delete(`/admin/remove-user/${id}`);
+      if (response.status === 200) {
+        setUsers(users.filter((user) => user.id !== id));
+        setSuccessMessage(`User with ID #${id} was successfully removed.`);
+      } else {
+        setSuccessMessage("Failed to remove the user.");
+      }
+    } catch (error) {
+      console.error("Error:", error.response || error);
+      setSuccessMessage("Failed to remove the user.");
+    }
+
+    // Clear success message after 3 seconds
     setTimeout(() => setSuccessMessage(""), 3000);
   };
+
 
   // Approve hotel
   const handleApproveHotel = (id) => {
@@ -48,14 +104,14 @@ function AdminDashboard() {
         hotel.id === id ? { ...hotel, status: "Approved" } : hotel
       )
     );
-    setSuccessMessage(`Hotel #${id} has been approved.`);
+    setSuccessMessage("Hotel #${id} has been approved.");
     setTimeout(() => setSuccessMessage(""), 3000);
   };
 
   // Flag hotel (removes from list)
   const handleFlagHotel = (id) => {
     setHotels(hotels.filter((hotel) => hotel.id !== id));
-    setSuccessMessage(`Hotel #${id} has been flagged and removed.`);
+    setSuccessMessage("Hotel #${id} has been flagged and removed");
     setTimeout(() => setSuccessMessage(""), 3000);
   };
 
@@ -70,6 +126,16 @@ function AdminDashboard() {
       <div>
         <h2>Manage Users</h2>
         {successMessage && <div className="alert alert-success">{successMessage}</div>}
+
+        {/* User Search Input */}
+        <input
+          type="text"
+          placeholder="Search by ID, Name, or Email"
+          value={userSearchQuery}
+          onChange={handleUserSearch}
+          className="form-control mb-3"
+        />
+
         <table className="table">
           <thead>
             <tr>
@@ -80,13 +146,16 @@ function AdminDashboard() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <tr key={user.id}>
-                <td>#{user.id}</td>
-                <td>{user.name}</td>
+                <td>{user.id}</td>
+                <td>{user.username}</td>
                 <td>{user.email}</td>
                 <td>
-                  <button className="btn btn-danger" onClick={() => handleRemoveUser(user.id)}>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleRemoveUser(user.id)}
+                  >
                     Remove
                   </button>
                 </td>
@@ -94,13 +163,23 @@ function AdminDashboard() {
             ))}
           </tbody>
         </table>
-        {users.length === 0 && <p>No users remaining.</p>}
+        {filteredUsers.length === 0 && <p>No matching users found.</p>}
       </div>
     ),
     hotels: (
       <div>
         <h2>Manage Hotel Listings</h2>
         {successMessage && <div className="alert alert-success">{successMessage}</div>}
+
+        {/* Hotel Search Input */}
+        <input
+          type="text"
+          placeholder="Search by Hotel ID, Name, Owner, or Status"
+          value={hotelSearchQuery}
+          onChange={handleHotelSearch}
+          className="form-control mb-3"
+        />
+
         <table className="table">
           <thead>
             <tr>
@@ -112,7 +191,7 @@ function AdminDashboard() {
             </tr>
           </thead>
           <tbody>
-            {hotels.map((hotel) => (
+            {filteredHotels.map((hotel) => (
               <tr key={hotel.id}>
                 <td>#{hotel.id}</td>
                 <td>{hotel.name}</td>
@@ -120,11 +199,17 @@ function AdminDashboard() {
                 <td>{hotel.status}</td>
                 <td>
                   {hotel.status !== "Approved" && (
-                    <button className="btn btn-warning" onClick={() => handleApproveHotel(hotel.id)}>
+                    <button
+                      className="btn btn-warning"
+                      onClick={() => handleApproveHotel(hotel.id)}
+                    >
                       Approve
                     </button>
                   )}
-                  <button className="btn btn-danger" onClick={() => handleFlagHotel(hotel.id)}>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleFlagHotel(hotel.id)}
+                  >
                     Flag
                   </button>
                 </td>
@@ -132,7 +217,7 @@ function AdminDashboard() {
             ))}
           </tbody>
         </table>
-        {hotels.length === 0 && <p>No hotels remaining.</p>}
+        {filteredHotels.length === 0 && <p>No matching hotels found.</p>}
       </div>
     ),
   };
@@ -160,4 +245,4 @@ function AdminDashboard() {
   );
 }
 
-export default AdminDashboard;
+export default AdminDashboard
