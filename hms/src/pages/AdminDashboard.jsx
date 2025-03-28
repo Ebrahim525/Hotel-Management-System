@@ -32,7 +32,6 @@ function AdminDashboard() {
     const fetchUsers = async () => {
       try {
         const response = await axiosInstance.get("/admin/users"); // Correct API
-        console.log("Api Res:", response.data);
         setUsers(response.data.users || []); // Set fetched users
         setMessage("Welcome to the Admin Dashboard!");
       } catch (error) {
