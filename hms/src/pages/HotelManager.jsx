@@ -3,18 +3,28 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./HotelManagerDashboard.css";
 import profilePhoto from "./Images/profile.png";
 
+
 const HotelManagerDashboard = () => {
   const [page, setPage] = useState("profile");
-  const [rooms, setRooms] = useState([
-    { id: "#R001", type: "Deluxe Suite", price: 150, availability: "Available" },
-    { id: "#R002", type: "Standard Room", price: 80, availability: "Booked" },
+  const [hotels, setHotels] = useState([
+    { 
+      name: "Luxury Inn", 
+      location: "Pattikkaadu",
+      roomTypes: [
+        { type: "Deluxe Suite", price: 150, availability: 5 },
+        { type: "Standard Room", price: 80, availability: 3 },
+      ] 
+    }
   ]);
-  const [newRoom, setNewRoom] = useState({ id: "", type: "", price: "", availability: "Available" });
-  const [editingRoom, setEditingRoom] = useState(null);
+  const [selectedHotelIndex, setSelectedHotelIndex] = useState(0);
+  const [newHotel, setNewHotel] = useState({ name: "", location: "" });
+  const [newRoomType, setNewRoomType] = useState({ type: "", price: "", availability: "" });
+  const [editingRoomType, setEditingRoomType] = useState(null);
   const [profile, setProfile] = useState({
     name: "Michael Johnson",
     email: "micxhael@luxuryinn.com",
     hotel: "Luxury Inn",
+    location: "Pattikkaadu"
   });
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [bookings, setBookings] = useState([
@@ -22,36 +32,81 @@ const HotelManagerDashboard = () => {
     { id: "#B002", user: "Jane Smith", room: "Standard Room", checkIn: "2025-04-18", checkOut: "2025-04-22" },
   ]);
 
-  const handleAddRoom = () => {
-    if (!newRoom.id || !newRoom.type || !newRoom.price) return;
-    setRooms([...rooms, newRoom]);
-    setNewRoom({ id: "", type: "", price: "", availability: "Available" });
+
+  const handleAddOrUpdateRoomType = () => {
+    if (!newRoomType.type || !newRoomType.price || !newRoomType.availability) return;
+  
+    setHotels(hotels.map((hotel, index) => 
+      index === selectedHotelIndex
+        ? {
+            ...hotel,
+            roomTypes: editingRoomType
+              ? hotel.roomTypes.map(room => 
+                  room.type === editingRoomType?.type ? { ...newRoomType } : room
+                )
+              : [...hotel.roomTypes, { ...newRoomType }]
+          }
+        : hotel
+    ));
+  
+    setNewRoomType({ 
+      ...newRoomType, 
+      price: Number(e.target.value), 
+      availability: Number(e.target.value) 
+    });
+    
+    setEditingRoomType(null);
+  };
+  
+
+  const handleAddHotel = () => {
+    if (!newHotel.name || !newHotel.location) return;
+  
+    setHotels([...hotels, { ...newHotel, roomTypes: [] }]);
+    setNewHotel({ name: "", location: "" });
+  };
+  
+
+
+  const handleDeleteRoomType = (type) => {
+    setHotels(hotels.map((hotel, index) => 
+      index === selectedHotelIndex
+        ? {
+            ...hotel,
+            roomTypes: hotel.roomTypes.filter(room => room.type !== type)
+          }
+        : hotel
+    ));
   };
 
-  const handleDeleteRoom = (id) => {
-    setRooms(rooms.filter((room) => room.id !== id));
+
+  const handleEditRoomType = (room) => {
+    setNewRoomType({ ...room }); // Spread the object to create a new instance
+    setEditingRoomType(room);
+  };
+  
+
+
+  const handleCancelEdit = () => {
+    setNewRoomType({ type: "", price: "", availability: "" });
+    setEditingRoomType(null);
   };
 
-  const handleEditRoom = (room) => {
-    setEditingRoom(room);
-  };
-
-  const handleUpdateRoom = () => {
-    setRooms(rooms.map((room) => (room.id === editingRoom.id ? editingRoom : room)));
-    setEditingRoom(null);
-  };
 
   const handleCancelBooking = (id) => {
     setBookings(bookings.filter((booking) => booking.id !== id));
   };
 
+
   const handleProfileEditToggle = () => {
     setIsEditingProfile(!isEditingProfile);
   };
 
+
   const handleProfileChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
+
 
   const content = {
     profile: (
@@ -78,50 +133,88 @@ const HotelManagerDashboard = () => {
       </div>
     ),
     manageHotel: (
-      <div>
-        <h2>Manage Hotel - Rooms</h2>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Room ID</th>
-              <th>Room Type</th>
-              <th>Price per Night</th>
-              <th>Availability</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rooms.map((room) => (
-              <tr key={room.id}>
-                <td>{room.id}</td>
-                <td>{room.type}</td>
-                <td>${room.price}</td>
-                <td>{room.availability}</td>
-                <td>
-                  <button className="btn btn-warning" onClick={() => handleEditRoom(room)}>Update</button>
-                  <button className="btn btn-danger" onClick={() => handleDeleteRoom(room.id)}>Delete</button>
-                </td>
-              </tr>
+      <div className="manage-hotel-container">
+        <div className="hotel-selection">
+          <h3>Select Hotel</h3>
+          <select 
+            className="form-select"
+            value={selectedHotelIndex}
+            onChange={(e) => setSelectedHotelIndex(parseInt(e.target.value))}
+          >
+            {hotels.map((hotel, index) => (
+              <option key={index} value={index}>
+                {hotel.name} - {hotel.location}
+              </option>
             ))}
-          </tbody>
-        </table>
+          </select>
+        </div>
+    
+        <div className="room-type-wrapper">
+          <div className="room-types">
+            <h2>Manage Room Types</h2>
+            {hotels.length > 0 ? (
+  <h3>Hotel: {hotels[selectedHotelIndex]?.name}, {hotels[selectedHotelIndex]?.location}</h3>
+) : (
+  <p>No hotels available. Please add a new hotel.</p>
+)}
 
-        {editingRoom ? (
-          <div>
-            <h3>Edit Room</h3>
-            <input type="text" placeholder="Room Type" value={editingRoom.type} onChange={(e) => setEditingRoom({ ...editingRoom, type: e.target.value })} />
-            <input type="number" placeholder="Price" value={editingRoom.price} onChange={(e) => setEditingRoom({ ...editingRoom, price: e.target.value })} />
-            <button className="btn btn-success" onClick={handleUpdateRoom}>Save</button>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Room Type</th>
+                  <th>Price per Night</th>
+                  <th>Availability</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {hotels[selectedHotelIndex].roomTypes.map((room) => (
+                  <tr key={room.type}>
+                    <td>{room.type}</td>
+                    <td>${room.price}</td>
+                    <td>{room.availability}</td>
+                    <td>
+                      <button className="btn btn-warning" onClick={() => handleEditRoomType(room)}>Update</button>
+                      <button className="btn btn-danger" onClick={() => handleDeleteRoomType(room.type)}>Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ) : (
-          <div>
-            <h3>Add New Room</h3>
-            <input type="text" placeholder="Room ID" value={newRoom.id} onChange={(e) => setNewRoom({ ...newRoom, id: e.target.value })} />
-            <input type="text" placeholder="Room Type" value={newRoom.type} onChange={(e) => setNewRoom({ ...newRoom, type: e.target.value })} />
-            <input type="number" placeholder="Price" value={newRoom.price} onChange={(e) => setNewRoom({ ...newRoom, price: e.target.value })} />
-            <button className="btn btn-success" onClick={handleAddRoom}>Add Room</button>
+    
+          {/* Keep the existing add-room-section exactly as is from Code A */}
+          <div className="add-room-section">
+            <h4>{editingRoomType ? "Edit Room Type" : "Add Room Type"}</h4>
+            <input type="text" placeholder="Type Name" value={newRoomType.type} onChange={(e) => setNewRoomType({ ...newRoomType, type: e.target.value })} />
+            <input type="number" placeholder="Price" value={newRoomType.price} onChange={(e) => setNewRoomType({ ...newRoomType, price: e.target.value })} />
+            <input type="number" placeholder="Availability" value={newRoomType.availability} onChange={(e) => setNewRoomType({ ...newRoomType, availability: e.target.value })} />
+            <button className="btn btn-success" onClick={handleAddOrUpdateRoomType}>
+              {editingRoomType ? "Save Changes" : "Add Room Type"}
+            </button>
+            {editingRoomType && <button className="btn btn-secondary" onClick={handleCancelEdit}>Cancel</button>}
           </div>
-        )}
+        </div>
+    
+        {/* Add this new section for adding hotels */}
+        <div className="add-hotel-section">
+          <h3>Add New Hotel</h3>
+          <input 
+            type="text" 
+            placeholder="Hotel Name" 
+            value={newHotel.name}
+            onChange={(e) => setNewHotel({ ...newHotel, name: e.target.value })}
+          />
+          <input 
+            type="text" 
+            placeholder="Location" 
+            value={newHotel.location}
+            onChange={(e) => setNewHotel({ ...newHotel, location: e.target.value })}
+          />
+          <button className="btn btn-primary" onClick={handleAddHotel}>
+            Add Hotel
+          </button>
+        </div>
       </div>
     ),
     manageBookings: (
@@ -157,6 +250,7 @@ const HotelManagerDashboard = () => {
     ),
   };
 
+
   return (
     <div className="admin-dashboard">
       <div className="banner">
@@ -172,5 +266,6 @@ const HotelManagerDashboard = () => {
     </div>
   );
 };
+
 
 export default HotelManagerDashboard;

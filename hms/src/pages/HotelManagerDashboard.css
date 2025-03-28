@@ -125,40 +125,202 @@
     width: 25vh;
 }
 
-.add-room-container {
-  background: #f8f9fa;
+.manage-hotel-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.room-types {
+  width: 60%;
+}
+
+.add-room-section {
+  width: 35%;
+  background: #f8ede3;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  margin: 20px auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.add-room-container h3 {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.add-room-container .form-group {
-  margin-bottom: 10px;
-}
-
-.add-room-container .form-group label {
-  font-weight: bold;
+.add-room-section input {
   display: block;
-  margin-bottom: 5px;
-}
-
-.add-room-container .form-control {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ced4da;
+  margin: 10px 0;
+  border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.add-room-container .btn-success {
+.add-room-section button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-room-section button:hover {
+  background: #388e3c;
+}
+
+.manage-hotel-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.left-section {
+  width: 60%;
+}
+
+.room-types {
+  margin-bottom: 20px;
+}
+
+.add-hotel-section {
+  background: #f1f1f1;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-hotel-section input {
+  display: block;
   width: 100%;
   padding: 8px;
-  font-size: 16px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
   border-radius: 5px;
+}
+
+.add-hotel-section button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-hotel-section button:hover {
+  background: #0056b3;
+}
+
+.add-room-section {
+  width: 35%;
+  background: #f8ede3;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-room-section input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.add-room-section button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-room-section button:hover {
+  background: #388e3c;
+}
+.manage-hotel-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.room-type-wrapper {.save-btn, .cancel-btn {
+  width: 100%;  /* Ensures buttons are evenly spaced */
+  margin: 5% 1%;  /* Adds space between buttons */
+}
+
+@media (max-width: 768px) {
+  .save-btn, .cancel-btn {
+    width: 100%;  /* Stacks buttons on smaller screens */
+    margin: 5px 0;
+  }
+}
+
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.room-types {
+  width: 65%; /* Adjust width as needed */
+}
+
+.add-room-section {
+  width: 30%; /* Adjust width as needed */
+}
+
+.add-hotel-section {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.btn-secondary{
+  margin-top: 5px;
+  background-color: rgb(216, 109, 8) !important;
+}
+.hotel-room-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.hotel-section {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.add-room-section {
+  flex: 0.4;
+  display: flex;
+  flex-direction: column;
+}
+.hotel-selection {
+  margin-bottom: 20px;
+}
+
+.hotel-selection select {
+  max-width: 400px;
+  margin-top: 10px;
+}
+
+.add-hotel-section {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.add-hotel-section input {
+  display: block;
+  margin-bottom: 10px;
+  padding: 8px;
+  width: 100%;
+  max-width: 300px;
 }
