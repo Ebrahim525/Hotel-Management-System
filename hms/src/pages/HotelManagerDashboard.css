@@ -1,0 +1,326 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+.admin-dashboard .banner {
+    width: 100%;
+    padding: 15px 20px;
+    background: #a45c40;
+    color: white;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: "Montserrat", sans-serif; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .admin-dashboard .home-btn {
+    font-size: 18px;
+    color: white;
+    text-decoration: none;
+    background: #8c4a30;
+    padding: 8px 15px;
+    border-radius: 6px;
+    transition: 0.3s ease-in-out;
+  }
+  
+  .admin-dashboard .home-btn:hover {
+    background: #6b3625;
+  }
+  
+  .admin-dashboard .sidebar {
+    margin-top: -15px;
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    background: #d4a373;
+    padding-top: 20px;
+    text-align: center;
+  }
+  
+  .admin-dashboard .sidebar-link {
+    display: block;
+    font-weight: 600;
+    font-size: 18px;
+    color: white;
+    padding: 12px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: #d4a373;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .admin-dashboard .sidebar-link:hover {
+    background: #6b3625;
+  }
+  
+  .admin-dashboard .content {
+    margin-left: 270px;
+    margin-top: 90px;
+    padding: 20px;
+    width: calc(100% - 270px);
+  }
+  
+  .admin-dashboard .btn-warning {
+    color: #3D2B1F;
+    font-size: 16px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    width: auto;
+    margin-right: 5px;
+  }
+  
+  .admin-dashboard .btn-danger {
+    color: white;
+    font-size: 16px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    width: auto;
+    margin-left: 5px;
+  }
+  
+  .admin-dashboard .btn-success {
+    background: #4caf50;
+    font-size: 16px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  
+  .profile-card {
+    background: #f8ede3;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .profile-card p {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  
+  .profile-card .btn-primary {
+    background-color: #a45c40;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 6px;
+    color: white;
+  }
+.ProfilePh {
+    border-radius: 50%;
+    width: 25vh;
+}
+
+.manage-hotel-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.room-types {
+  width: 60%;
+}
+
+.add-room-section {
+  width: 35%;
+  background: #f8ede3;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-room-section input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.add-room-section button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-room-section button:hover {
+  background: #388e3c;
+}
+
+.manage-hotel-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.left-section {
+  width: 60%;
+}
+
+.room-types {
+  margin-bottom: 20px;
+}
+
+.add-hotel-section {
+  background: #f1f1f1;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-hotel-section input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.add-hotel-section button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-hotel-section button:hover {
+  background: #0056b3;
+}
+
+.add-room-section {
+  width: 35%;
+  background: #f8ede3;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-room-section input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.add-room-section button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-room-section button:hover {
+  background: #388e3c;
+}
+.manage-hotel-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.room-type-wrapper {.save-btn, .cancel-btn {
+  width: 100%;  /* Ensures buttons are evenly spaced */
+  margin: 5% 1%;  /* Adds space between buttons */
+}
+
+@media (max-width: 768px) {
+  .save-btn, .cancel-btn {
+    width: 100%;  /* Stacks buttons on smaller screens */
+    margin: 5px 0;
+  }
+}
+
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.room-types {
+  width: 65%; /* Adjust width as needed */
+}
+
+.add-room-section {
+  width: 30%; /* Adjust width as needed */
+}
+
+.add-hotel-section {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.btn-secondary{
+  margin-top: 5px;
+  background-color: rgb(216, 109, 8) !important;
+}
+.hotel-room-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.hotel-section {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.add-room-section {
+  flex: 0.4;
+  display: flex;
+  flex-direction: column;
+}
+.hotel-selection {
+  margin-bottom: 20px;
+}
+
+.hotel-selection select {
+  max-width: 400px;
+  margin-top: 10px;
+}
+
+.add-hotel-section {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.add-hotel-section input {
+  display: block;
+  margin-bottom: 10px;
+  padding: 8px;
+  width: 100%;
+  max-width: 300px;
+}

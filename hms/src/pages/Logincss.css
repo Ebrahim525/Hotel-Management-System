@@ -93,3 +93,28 @@
     border-radius: 5px;
     outline: none;
 }
+
+.password-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .password-container input {
+    width: 100%;
+    padding-right: 40px;
+  }
+  
+  .password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #555;
+    font-size: 18px;
+  }
+  
+  .password-toggle:hover {
+    color: #333;
+  }
+  
