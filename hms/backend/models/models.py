@@ -14,9 +14,9 @@ class User(db.Model):
     date_registered = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     # Relationships
-    bookings = db.relationship('Booking', backref='user', lazy=True)
-    reviews = db.relationship('Review', backref='user', lazy=True)
-    hotels = db.relationship('Hotel', backref='owner', lazy=True)
+    bookings = db.relationship('Booking', backref='user', lazy=True, cascade="all, delete-orphan")
+    reviews = db.relationship('Review', backref='user', lazy=True, cascade="all, delete-orphan")
+    hotels = db.relationship('Hotel', backref='owner', lazy=True, cascade="all, delete-orphan")
 
 
 # ----------------- Booking Model -----------------
@@ -34,7 +34,7 @@ class Booking(db.Model):
     hotel_id = db.Column(db.Integer, db.ForeignKey('hotel.id'), nullable=False)  # New field
 
     # Relationships
-    payments = db.relationship('Payment', backref='booking', lazy=True)
+    payments = db.relationship('Payment', backref='booking', lazy=True, cascade="all, delete-orphan")
 
 
 # ----------------- Room Model -----------------
@@ -50,7 +50,7 @@ class Room(db.Model):
     hotel_id = db.Column(db.Integer, db.ForeignKey('hotel.id'), nullable=False)
 
     # Relationships
-    bookings = db.relationship('Booking', backref='room', lazy=True)
+    bookings = db.relationship('Booking', backref='room', lazy=True, cascade="all, delete-orphan")
 
 
 # ----------------- Payment Model -----------------

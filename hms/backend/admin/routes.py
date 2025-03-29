@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt
-from models.models import User, Hotel
+from models.models import User, Hotel, Review, Payment, Booking, Room
 from app import db
 
 # Create a blueprint for admin routes
@@ -68,10 +68,29 @@ def remove_user(user_id):
 
     if not user:
         return jsonify({"error": "User not found."}), 404
+    
+    # if(user.usertype == "Manager"):
+    #     hotels_to_delete = Hotel.query.filter_by(owner_id=user_id).all()
+
+    #     for hotel in hotels_to_delete:
+    #         Booking.query.filter_by(hotel_id=hotel.id).delete()
+    #         Room.query.filter_by(hotel_id=hotel.id).delete()
+    #         Review.query.filter_by(hotel_id=hotel.id).delete()
+    #         db.session.delete(hotel)
+    
+    # if(user.usertype == "Guest"):
+    #     Review.query.filter_by(user_id=user_id).delete()
+    #     guest_bookings = Booking.query.filter_by(user_id=user_id).all()
+
+    #     for booking in guest_bookings:
+    #         Payment.query.filter_by(booking_id=booking.id).delete()
+    #     Booking.query.filter_by(user_id=user_id).delete()
+
 
     db.session.delete(user)
+    db.session.flush()
     db.session.commit()
-    return jsonify({"message": f"User with ID {user_id} has been removed."}), 200
+    return jsonify({"message": f"User with ID {user_id} and associated hotels have been removed."}), 200
 
 
 

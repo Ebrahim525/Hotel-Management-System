@@ -53,7 +53,8 @@ function AdminDashboard() {
       const response = await axiosInstance.delete(`/admin/remove-user/${id}`);
       if (response.status === 200) {
         setUsers(users.filter((user) => user.id !== id));
-        setSuccessMessage("User with ID #${id} was successfully removed.");
+        setSuccessMessage(`User with ID #${id} was successfully removed.`);
+        window.location.reload();
       } else {
         setSuccessMessage("Failed to remove the user.");
       }
@@ -171,7 +172,7 @@ const handleDeleteHotel = async (id) => {
     const response = await axiosInstance.delete(`/admin/hotels/${id}/delete`);
     if (response.status === 200) {
       setHotels(hotels.filter((hotel) => hotel.id !== id));
-      setSuccessMessage("Hotel #${id} has been successfully deleted.");
+      setSuccessMessage(`Hotel #${id} has been successfully deleted.`);
     } else {
       setSuccessMessage("❌ Failed to delete the hotel.");
     }
