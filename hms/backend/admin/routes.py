@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt
 from models.models import User, Hotel, Review, Payment, Booking, Room
-from app import db
+#from app import db
+from models.models import db
 
 admin_bp = Blueprint('admin_bp', __name__)
 
