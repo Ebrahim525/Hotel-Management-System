@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from models.models import db, User
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
 from admin.routes import admin_bp
+from hotelManager.routes import hotel_bp
 
 
 app = Flask(__name__)
@@ -23,6 +24,7 @@ migrate = Migrate(app, db)
 jwt = JWTManager(app)
 
 app.register_blueprint(admin_bp, url_prefix='/admin')
+app.register_blueprint(hotel_bp, url_prefix='/hotel')
 
 
 @app.route('/')
