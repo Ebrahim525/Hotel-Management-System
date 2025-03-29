@@ -3,37 +3,33 @@ from flask_jwt_extended import jwt_required, get_jwt
 from models.models import User, Hotel, Review, Payment, Booking, Room
 from app import db
 
-# Create a blueprint for admin routes
 admin_bp = Blueprint('admin_bp', __name__)
 
-# ------------------- Get Users (Top 7 or Search) -------------------
 @admin_bp.route('/users', methods=['GET'])
 @jwt_required()
 def get_users():
     claims = get_jwt()
     usertype = claims.get("usertype")
 
-    # Restrict to admin only
     if usertype != "Admin":
         return jsonify({"error": "Unauthorized access!"}), 403
 
-    search_query = request.args.get('search', '').strip()
+    search_query = request.args.get('search', '').strip().lower()
+    page = request.args.get('page', 1, type=int)
+    per_page = 7
+
+    query = User.query
 
     if search_query:
-        # Search by ID, username, or email
-        users = User.query.filter(
-            (User.id == search_query) |
+        query = query.filter(
+            (User.id.ilike(f"%{search_query}%")) |
             (User.username.ilike(f"%{search_query}%")) |
-            (User.email.ilike(f"%{search_query}%"))
-        ).all()
-    else:
-        # Get top 7 users if no search query
-        users = User.query.limit(7).all()
+            (User.email.ilike(f"%{search_query}%")) |
+            (User.usertype.ilike(f"%{search_query}%"))
+        )
 
-    if not users:
-        return jsonify({"message": "No users found."}), 404
+    users_paginated = query.paginate(page=page, per_page=per_page, error_out=False)
 
-    # Serialize user data
     user_list = [
         {
             "id": user.id,
@@ -43,9 +39,15 @@ def get_users():
             "usertype": user.usertype,
             "date_registered": user.date_registered.strftime('%Y-%m-%d %H:%M:%S')
         }
-        for user in users
+        for user in users_paginated.items
     ]
-    return jsonify({"users": user_list}), 200
+
+    return jsonify({
+        "users": user_list,
+        "total_pages": users_paginated.pages,
+        "current_page": page
+    }), 200
+
 
 ADMIN_USER_ID = 1
 

@@ -3,7 +3,7 @@ import axiosInstance from "../services/axiosInstance";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AdminDashboard.css";
 
-// DELETE HOTEL WILL DELTE ALL ROOMS ASSCIATED
+// DELETE HOTEL WILL DELETE ALL ROOMS ASSOCIATED
 
 function AdminDashboard() {
   const [message, setMessage] = useState("");
@@ -14,30 +14,47 @@ function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [userSearchQuery, setUserSearchQuery] = useState("");
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axiosInstance.get("/admin/users"); // Correct API
-        setUsers(response.data.users || []); // Set fetched users
-        setMessage("Welcome to the Admin Dashboard!");
-      } catch (error) {
-        console.error("Error:", error.response || error);
-        setMessage("Failed to load user data. Please login again.");
-      }
-    };
+  const [userCurrentPage, setUserCurrentPage] = useState(1); 
+  const [userTotalPages, setUserTotalPages] = useState(1);
+
+
+  const fetchUsers = async (page = 1, query = "") => {
+    try {
+      const response = await axiosInstance.get(
+        `/admin/users?page=${page}&search=${query}`
+      );
   
-    fetchUsers();
-  }, []);
+      setUsers(response.data.users || []);
+      setUserTotalPages(response.data.total_pages);
+      setUserCurrentPage(page);
+    } catch (error) {
+      console.error("Error:", error.response || error);
+      setMessage("Failed to load user data. Please login again.");
+    }
+  };  
+
+  useEffect(() => {
+    fetchUsers(userCurrentPage, userSearchQuery);
+  }, [userCurrentPage, userSearchQuery]);
+  
 
   const handleUserSearch = (e) => {
     setUserSearchQuery(e.target.value.toLowerCase());
+    setUserCurrentPage(1);
   };
+  const handleUserPageChange = (pageNumber) => {
+    setUserCurrentPage(pageNumber);
+    fetchUsers(pageNumber, userSearchQuery);
+  };
+  
+  
 
   const filteredUsers = users.filter(
     (user) =>
       user.id.toString().includes(userSearchQuery) ||
       user.username.toLowerCase().includes(userSearchQuery) ||
-      user.email.toLowerCase().includes(userSearchQuery)
+      user.email.toLowerCase().includes(userSearchQuery) ||
+      user.usertype.toLowerCase().includes(userSearchQuery)
   );
 
   const handleRemoveUser = async (id) => {
@@ -201,11 +218,28 @@ const handleDeleteHotel = async (id) => {
         {/* User Search Input */}
         <input
           type="text"
-          placeholder="Search by ID, Name, or Email"
+          placeholder="Search by ID, Name, Status, or Email"
           value={userSearchQuery}
           onChange={handleUserSearch}
           className="form-control mb-3"
         />
+        <nav className="pagenav">
+          <ul className="pagination">
+            {Array.from({ length: userTotalPages }).map((_, index) => (
+              <li key={index + 1} className="page-item">
+                <button
+                  onClick={() => handleUserPageChange(index + 1)}
+                  className={`page-link ${
+                    userCurrentPage === index + 1 ? "active" : ""
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
 
         <table className="table">
           <thead>
