@@ -91,5 +91,5 @@ class Hotel(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     # Relationships
-    rooms = db.relationship('Room', backref='hotel', lazy=True)
-    reviews = db.relationship('Review', backref='hotel', lazy=True)
+    rooms = db.relationship('Room', backref='hotel', cascade="all, delete-orphan")
+    reviews = db.relationship('Review', backref='hotel', cascade="all, delete-orphan")

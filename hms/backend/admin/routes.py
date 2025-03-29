@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt
-from models.models import User
+from models.models import User, Hotel
 from app import db
 
 # Create a blueprint for admin routes
@@ -74,38 +74,102 @@ def remove_user(user_id):
     return jsonify({"message": f"User with ID {user_id} has been removed."}), 200
 
 
-# def remove_user(user_id):
-#     user = User.query.get(user_id)
-#     if not user:
-#         return jsonify({"error": "User not found"}), 404
-#     db.session.delete(user)
-#     db.session.commit()
-#     return jsonify({"message": f"User with ID #{user_id} was successfully removed."})
 
-# from flask import jsonify
+@admin_bp.route('/hotels', methods=['GET'])
+@jwt_required()
+def get_hotels():
+    claims = get_jwt()
+    usertype = claims.get("usertype")
 
-# @app.route('/get_user/<int:user_id>', methods=['GET'])
-# def get_user(user_id):
-#     user = User.query.get(user_id)
-#     if user:
-#         return jsonify({"id": user.id, "name": user.username, "email": user.email}), 200
-#     else:
-#         return jsonify({"error": "User not found"}), 404
+    if usertype != "Admin":
+        return jsonify({"error": "Unauthorized access!"}), 403
+
+    page = request.args.get("page", 1, type=int)
+    per_page = 7
+    search_query = request.args.get("search_query", "").strip().lower()
+
+    # Initial query with join
+    query = (
+        db.session.query(Hotel, User.username)
+        .join(User, Hotel.owner_id == User.id)
+    )
+
+    # Apply search filter before paginating
+    if search_query:
+        query = query.filter(
+            (Hotel.id.ilike(f"%{search_query}%")) |
+            (Hotel.hotel_name.ilike(f"%{search_query}%")) |
+            (User.username.ilike(f"%{search_query}%")) |
+            (Hotel.status.ilike(f"%{search_query}%"))
+        )
+
+    # Paginate after filtering
+    hotels = query.paginate(page=page, per_page=per_page, error_out=False)
+
+    hotel_list = [
+        {
+            "id": hotel.id,
+            "name": hotel.hotel_name,
+            "owner": owner_name,
+            "status": hotel.status,
+        }
+        for hotel, owner_name in hotels.items
+    ]
+
+    return jsonify({
+        "hotels": hotel_list,
+        "total_pages": hotels.pages,
+        "current_page": page,
+    }), 200
 
 
-# def search_users():
-#     query = request.args.get('q')
-#     if not query:
-#         return jsonify({"error": "Search query is missing"}), 400
 
-#     users = User.query.filter(
-#         (User.username.ilike(f"%{query}%")) |
-#         (User.email.ilike(f"%{query}%")) |
-#         (User.id == query)
-#     ).all()
+@admin_bp.route('/hotels/<int:hotel_id>/approve', methods=['PATCH'])
+@jwt_required()
+def approve_hotel(hotel_id):
+    claims = get_jwt()
+    if claims.get("usertype") != "Admin":
+        return jsonify({"error": "Unauthorized access!"}), 403
 
-#     if not users:
-#         return jsonify({"message": "No matching users found"}), 404
+    hotel = Hotel.query.get(hotel_id)
+    if not hotel:
+        return jsonify({"error": "Hotel not found"}), 404
 
-#     user_list = [{"id": user.id, "name": user.username, "email": user.email} for user in users]
-#     return jsonify(user_list)
+    hotel.status = "Approved"
+    db.session.commit()
+
+    return jsonify({"success": f"Hotel {hotel.hotel_name} approved successfully"}), 200
+
+
+@admin_bp.route('/hotels/<int:hotel_id>/flag', methods=['PATCH'])
+@jwt_required()
+def flag_hotel(hotel_id):
+    claims = get_jwt()
+    if claims.get("usertype") != "Admin":
+        return jsonify({"error": "Unauthorized access!"}), 403
+
+    hotel = Hotel.query.get(hotel_id)
+    if not hotel:
+        return jsonify({"error": "Hotel not found"}), 404
+
+    hotel.status = "Flagged"
+    db.session.commit()
+
+    return jsonify({"success": f"Hotel {hotel.hotel_name} flagged successfully"}), 200
+
+
+@admin_bp.route('/hotels/<int:hotel_id>/delete', methods=['DELETE'])
+@jwt_required()
+def delete_hotel(hotel_id):
+    claims = get_jwt()
+    if claims.get("usertype") != "Admin":
+        return jsonify({"error": "Unauthorized access!"}), 403
+
+    hotel = Hotel.query.get(hotel_id)
+    if not hotel:
+        return jsonify({"error": "Hotel not found"}), 404
+
+    db.session.delete(hotel)
+    db.session.commit()
+
+    return jsonify({"success": f"Hotel {hotel.hotel_name} deleted successfully"}), 200

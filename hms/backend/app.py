@@ -10,12 +10,12 @@ from admin.routes import admin_bp
 
 app = Flask(__name__)
 
-# Database configuration (using SQLite for now)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hms.db'  # SQLite
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'hmsprjt'  # Change this to a strong secret key
 
-# Initialize extensions
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hms.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = 'hmsprjt'
+
+
 db.init_app(app)
 bcrypt = Bcrypt(app)
 CORS(app)
@@ -57,28 +57,24 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
-    username = data.get('fullname')  # <-- Get the username from request
+    username = data.get('fullname')
     email = data.get('email')
     password = data.get('password')
     usertype = data.get('usertype')
     phone_number = data.get('phone_number')
 
-    # Check if username or email is missing
     if not username or not email or not password:
         return jsonify({"error": "Username, email, and password are required!"}), 400
 
     if usertype == "Admin":
         return jsonify({"error": "Cannot Register Admin"}), 400
 
-    # Check if user already exists
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
         return jsonify({"error": "User already exists"}), 409
 
-    # Hash the password
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-    # Create a new user with username
     new_user = User(username=username, email=email, password=hashed_password, usertype=usertype)
     db.session.add(new_user)
     db.session.commit()
@@ -86,9 +82,6 @@ def register():
     return jsonify({"message": "User registered successfully!"}), 201
 
 
-
-
-# ------------------- Dummy Dashboards -------------------
 @app.route('/admin', methods=['GET'])
 @jwt_required()
 def admin_dashboard():
@@ -112,4 +105,4 @@ def guest_dashboard():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)  # Port 5000 is default
+    app.run(debug=True, port=5000)
