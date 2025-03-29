@@ -4,10 +4,9 @@ from models.models import User, Hotel, Review, Payment, Booking, Room
 #from app import db
 from models.models import db
 
-# Create a blueprint for admin routes
 admin_bp = Blueprint('admin_bp', __name__)
 
-# ------------------- Get Users (Top 7 or Search) -------------------
+# ------------------- Get Users  -------------------
 @admin_bp.route('/users', methods=['GET'])
 @jwt_required()
 def get_users():
@@ -28,7 +27,6 @@ def get_users():
             (User.email.ilike(f"%{search_query}%"))
         ).all()
     else:
-        # Get top 7 users if no search query
         users = User.query.limit(7).all()
 
     if not users:
