@@ -52,7 +52,7 @@ const UserDashboard = () => {
     setEditingBooking(booking.id);
   };
 
-  // Update booking details when modified
+  // Update booking details when modifmofied
   const handleBookingChange = (id, field, value) => {
     setBookings((prevBookings) =>
       prevBookings.map((b) => (b.id === id ? { ...b, [field]: value } : b))
@@ -68,7 +68,21 @@ const UserDashboard = () => {
   const toggleReviewInput = (id) => {
     setReviewInputs((prev) => ({ ...prev, [id]: !prev[id] }));
   };
+  
+  const handleCancelBooking = (id) => {
+    const confirmCancel = window.confirm("Are you sure you want to cancel this booking?");
+    if (confirmCancel) {
+      // Update the status of the booking to "Request Sent"
+      setBookings((prevBookings) =>
+        prevBookings.map((booking) =>
+          booking.id === id ? { ...booking, status: "Request Sent", cancelRequested: true } : booking
+        )
+      );
+      alert("Your cancellation request has been sent.");
+    }
+  };
 
+  
   // Handle star rating selection
   // const handleStarClick = (id, star) => {
   //   setRatings((prevRatings) => ({ ...prevRatings, [id]: star }));
@@ -158,6 +172,7 @@ const UserDashboard = () => {
               <th>Date</th>
               <th>Status</th>
               <th>Modify</th>
+              <th>Cancel</th> {/* Added Cancel column */}
             </tr>
           </thead>
           <tbody>
@@ -165,47 +180,44 @@ const UserDashboard = () => {
               <tr key={booking.id}>
                 <td>{booking.hotel}</td>
                 <td>{booking.room}</td>
-                <td>
-                  {editingBooking === booking.id ? (
-                    <input
-                      type="text"
-                      value={booking.type}
-                      onChange={(e) => handleBookingChange(booking.id, "type", e.target.value)}
-                    />
-                  ) : (
-                    booking.type
-                  )}
+                <td>{booking.type}</td>
+                <td>{booking.date}</td>
+                <td className={`status ${booking.status === "Confirmed" ? "approved" : "pending"}`}>
+                  {booking.status === "Confirmed" ? booking.status : "Request Sent"}
                 </td>
-                <td>
-                  {editingBooking === booking.id ? (
-                    <input
-                      type="date"
-                      value={booking.date}
-                      onChange={(e) => handleBookingChange(booking.id, "date", e.target.value)}
-                    />
-                  ) : (
-                    booking.date
-                  )}
-                </td>
-                <td className="status approved">{booking.status}</td>
                 <td>
                   {editingBooking === booking.id ? (
                     <button className="btn save-btn" onClick={handleSaveClick}>Save</button>
+                  ) : booking.status === "Request Sent" ? (
+                    <span>Cancellation Request Sent</span> // Indicate that the cancellation request has been sent
                   ) : (
                     <button className="btn modify-btn" onClick={() => handleModifyClick(booking)}>Modify</button>
+                  )}
+                </td>
+                <td>
+                  {/* Cancel button, disabled if request has been sent */}
+                  {booking.status === "Request Sent" ? (
+                    <span>Request Sent</span> // Indicate that the cancellation request has been sent
+                  ) : (
+                    <button
+                      className="btn cancel-booking-btn"
+                      onClick={() => handleCancelBooking(booking.id)}
+                      disabled={booking.status === "Request Sent"}
+                    >
+                      Cancel
+                    </button>
                   )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-
+    
         {/* Booking History Section */}
         <h2 className="mt-4">Booking History</h2>
         <table className="table">
           <thead>
             <tr>
-              
               <th>Hotel Name</th>
               <th>Room ID</th>
               <th>Room Type</th>
@@ -246,7 +258,7 @@ const UserDashboard = () => {
         </table>
       </div>
     ),
-
+    
     searchHotel: (
       <div className="search-hotels">
         <h2>Search for Hotels</h2>

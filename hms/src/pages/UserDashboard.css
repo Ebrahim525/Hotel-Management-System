@@ -319,6 +319,32 @@
   border: none;
 }
 
+/* Cancel Booking Button */
+.cancel-booking-btn {
+  background: #d9534f; /* Red color to indicate cancellation */
+  color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cancel-booking-btn:hover {
+  background: #b52b27; /* Darker red on hover */
+  transform: scale(1.05); /* Slight zoom effect */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+  animation: shake 0.5s ease-in-out; /* Adding shake animation */
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
 .review-btn:hover {
   background: #3d6e35;
 }
