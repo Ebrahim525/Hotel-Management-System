@@ -48,10 +48,14 @@ const UserDashboard = () => {
   const [ratings, setRatings] = useState({});
 
   // Enable modify mode
+  // const handleModifyClick = (booking) => {
+  //   setEditingBooking(booking.id);
+  // };
   const handleModifyClick = (booking) => {
+    console.log("Editing booking ID:", booking.id); 
     setEditingBooking(booking.id);
   };
-
+  
   // Update booking details when modifmofied
   const handleBookingChange = (id, field, value) => {
     setBookings((prevBookings) =>
@@ -69,10 +73,23 @@ const UserDashboard = () => {
     setReviewInputs((prev) => ({ ...prev, [id]: !prev[id] }));
   };
   
+  // const handleCancelBooking = (id) => {
+  //   const confirmCancel = window.confirm("Are you sure you want to cancel this booking?");
+  //   if (confirmCancel) {
+  //     // Update the status of the booking to "Request Sent"
+  //     setBookings((prevBookings) =>
+  //       prevBookings.map((booking) =>
+  //         booking.id === id ? { ...booking, status: "Request Sent", cancelRequested: true } : booking
+  //       )
+  //     );
+  //     alert("Your cancellation request has been sent.");
+  //   }
+  // };
+
   const handleCancelBooking = (id) => {
     const confirmCancel = window.confirm("Are you sure you want to cancel this booking?");
     if (confirmCancel) {
-      // Update the status of the booking to "Request Sent"
+      // Update the status of the booking to "Request Sent" and disable Modify button
       setBookings((prevBookings) =>
         prevBookings.map((booking) =>
           booking.id === id ? { ...booking, status: "Request Sent", cancelRequested: true } : booking
@@ -81,6 +98,7 @@ const UserDashboard = () => {
       alert("Your cancellation request has been sent.");
     }
   };
+  
 
   
   // Handle star rating selection
@@ -161,57 +179,79 @@ const UserDashboard = () => {
     ),
 
     bookings: (
-      <div className="bookings">
-        <h2>Your Bookings</h2>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Hotel Name</th>
-              <th>Room ID</th>
-              <th>Room Type</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Modify</th>
-              <th>Cancel</th> {/* Added Cancel column */}
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((booking) => (
-              <tr key={booking.id}>
-                <td>{booking.hotel}</td>
-                <td>{booking.room}</td>
-                <td>{booking.type}</td>
-                <td>{booking.date}</td>
-                <td className={`status ${booking.status === "Confirmed" ? "approved" : "pending"}`}>
-                  {booking.status === "Confirmed" ? booking.status : "Request Sent"}
-                </td>
-                <td>
-                  {editingBooking === booking.id ? (
-                    <button className="btn save-btn" onClick={handleSaveClick}>Save</button>
-                  ) : booking.status === "Request Sent" ? (
-                    <span>Cancellation Request Sent</span> // Indicate that the cancellation request has been sent
-                  ) : (
-                    <button className="btn modify-btn" onClick={() => handleModifyClick(booking)}>Modify</button>
-                  )}
-                </td>
-                <td>
-                  {/* Cancel button, disabled if request has been sent */}
-                  {booking.status === "Request Sent" ? (
-                    <span>Request Sent</span> // Indicate that the cancellation request has been sent
-                  ) : (
-                    <button
-                      className="btn cancel-booking-btn"
-                      onClick={() => handleCancelBooking(booking.id)}
-                      disabled={booking.status === "Request Sent"}
-                    >
-                      Cancel
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  <div className="bookings">
+  <h2>Your Bookings</h2>
+  <table className="table">
+    <thead>
+      <tr>
+        <th>Hotel Name</th>
+        <th>Room ID</th>
+        <th>Room Type</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Modify</th>
+        <th>Cancel</th> {/* Added Cancel column */}
+      </tr>
+    </thead>
+    <tbody>
+      {bookings.map((booking) => (
+        <tr key={booking.id}>
+          <td>{booking.hotel}</td>
+          <td>{booking.room}</td>
+          <td>{booking.type}</td>
+          <td>{booking.date}</td>
+          <td className={`status ${booking.status === "Confirmed" ? "approved" : "pending"}`}>
+            {booking.status === "Confirmed" ? booking.status : "Request Sent"}
+          </td>
+          {/* Modify Button Logic */}
+          <td>
+            {booking.cancelRequested ? (
+              <button className="btn modify-btn" disabled>
+                Cancellation Request Sent
+              </button>
+            ) : editingBooking === booking.id ? (
+              <>
+                {/* Editable input fields for room and type */}
+                <input
+                  type="text"
+                  value={booking.room}
+                  onChange={(e) => handleBookingChange(booking.id, "room", e.target.value)}
+                  placeholder="Room ID"
+                />
+                <input
+                  type="text"
+                  value={booking.type}
+                  onChange={(e) => handleBookingChange(booking.id, "type", e.target.value)}
+                  placeholder="Room Type"
+                />
+                <button className="btn save-btn" onClick={handleSaveClick}>
+                  Save
+                </button>
+              </>
+            ) : (
+              <button className="btn modify-btn" onClick={() => handleModifyClick(booking)}>
+                Modify
+              </button>
+            )}
+          </td>   
+          {/* Cancel Button Logic */}
+          <td>
+            {booking.status === "Request Sent" ? (
+              <span>Request Sent</span> // Indicate that cancellation request has been sent
+            ) : (
+              <button
+                className="btn cancel-booking-btn"
+                onClick={() => handleCancelBooking(booking.id)}
+                disabled={booking.status === "Request Sent"}
+              >
+                Cancel
+              </button>
+            )}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
     
         {/* Booking History Section */}
         <h2 className="mt-4">Booking History</h2>
