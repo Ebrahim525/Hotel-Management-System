@@ -349,7 +349,7 @@ const UserDashboard = () => {
     <div className="user-dashboard">
       <div className="banner">
         <div>Hotel Management System</div>
-        <a href="/" className="home-btn">Home</a>
+        <a href="/" className="home-btn">Sign Out</a>
       </div>
 
       <div className="sidebar">
