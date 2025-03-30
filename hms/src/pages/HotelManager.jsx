@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./HotelManagerDashboard.css";
 import profilePhoto from "./Images/profile.png";
+import { useNavigate } from "react-router-dom";
 
 
 const HotelManagerDashboard = () => {
@@ -250,12 +251,21 @@ const HotelManagerDashboard = () => {
     ),
   };
 
+  const navigate = useNavigate();
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    sessionStorage.removeItem("token"); 
+    navigate("/");
+  };
 
   return (
     <div className="admin-dashboard">
       <div className="banner">
         <div>Hotel Manager Dashboard</div>
-        <a href="/" className="home-btn">Home</a>
+        <a href="#" className="home-btn" onClick={handleLogout}>
+          Logout
+        </a>
       </div>
       <div className="sidebar">
         <button className="sidebar-link" onClick={() => setPage("profile")}>Profile</button>

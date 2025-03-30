@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./UserDashboard.css";
 import profilePhoto from "./Images/profile.png";
+import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
   const [page, setPage] = useState("profile");
@@ -383,13 +384,23 @@ const UserDashboard = () => {
     
     // Optional: Add booking logic here if you want to store it in state or database
   };
+
+  const navigate = useNavigate();
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    sessionStorage.removeItem("token"); 
+    navigate("/");
+  };
   
 
   return (
     <div className="user-dashboard">
       <div className="banner">
         <div>Hotel Management System</div>
-        <a href="/" className="home-btn">Sign Out</a>
+        <a href="#" className="home-btn" onClick={handleLogout}>
+          Logout
+        </a>
       </div>
 
       <div className="sidebar">

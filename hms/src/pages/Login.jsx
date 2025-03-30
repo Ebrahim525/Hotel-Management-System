@@ -48,10 +48,11 @@ function Login() {
         });
 
         if (response.data.access_token) {
-          // Save JWT token to localStorage
-          localStorage.setItem("token", response.data.access_token);
-
+          // Save JWT token to SessionStorage
+          sessionStorage.setItem("token", response.data.access_token);
+          // console.log(response.data);
           // Redirect to user dashboard
+          // console.log(response.data.redirect_url);
           window.location.href = response.data.redirect_url;
         } else {
           alert("Invalid email or password.");
