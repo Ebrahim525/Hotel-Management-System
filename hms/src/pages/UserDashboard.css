@@ -11,7 +11,6 @@
     text-align: center;
     font-size: 30px;
     font-weight: bold;
-    /*font-family: "Playfair Display", serif;*/
     font-family: "Montserrat", sans-serif; 
     position: fixed;
     top: 0;
@@ -20,32 +19,32 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
+}
   
-  .user-dashboard .home-btn {
+.user-dashboard .home-btn {
     font-size: 18px;
     color: white;
     text-decoration: none;
     background: #8c4a30;
     padding: 8px 15px;
     border-radius: 6px;
-    transition: 0.3s;
-  }
+    transition: background 0.3s;
+}
   
-  .user-dashboard .home-btn:hover {
+.user-dashboard .home-btn:hover {
     background: #6b3625;
-  }
+}
   
-  .user-dashboard .sidebar {
+.user-dashboard .sidebar {
     height: 100vh;
     width: 250px;
     position: fixed;
     background: #d4a373;
     padding-top: 20px;
     text-align: center;
-  }
+}
   
-  .user-dashboard .sidebar-link {
+.user-dashboard .sidebar-link {
     display: block;
     font-weight: 600;
     font-size: 18px;
@@ -57,21 +56,21 @@
     border: none;
     cursor: pointer;
     width: 100%;
-  }
+}
   
-  .user-dashboard .sidebar-link:hover {
+.user-dashboard .sidebar-link:hover {
     background: #6b3625;
-  }
+}
   
-  .user-dashboard .content {
+.user-dashboard .content {
     margin-left: 270px;
     margin-top: 90px;
     padding: 20px;
     width: calc(100% - 270px);
-  }
+}
   
-  /* Profile Section */
-  .profile-card {
+/* Profile Section */
+.profile-card {
     background: #f8ede3;
     padding: 20px;
     border-radius: 10px;
@@ -79,22 +78,58 @@
     width: 50%;
     margin: 20px auto;
     text-align: center;
-  }
+}
   
-  .profile-card p {
+.profile-card p {
     font-size: 18px;
     margin: 10px 0;
-  }
+}
   
-  .edit-profile {
+.edit-profile {
     background-color: #a45c40;
     border: none;
     padding: 10px 20px;
     border-radius: 6px;
     color: white;
-  }
+    cursor: pointer;
+    transition: background 0.3s;
+}
   
-  .account-settings {
+.edit-profile:hover {
+    background: #6b3625;
+}
+
+/* New Profile Buttons */
+.save-profile {
+    background: #5a8f4f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    margin-right: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.save-profile:hover {
+    background: #3d6e35;
+}
+
+.cancel-profile {
+    background: #d9534f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.cancel-profile:hover {
+    background: #b52b27;
+}
+
+.account-settings {
     margin-top: 30px;
     padding: 20px;
     background: #f8f0e3;
@@ -102,342 +137,397 @@
     text-align: center;
     width: 50%;
     margin: auto;
-  }
+}
   
-  .account-settings h3 {
+.account-settings h3 {
     color: #a45c40;
-  }
+}
   
-  .change-password,
-  .delete-account {
+.change-password,
+.delete-account {
     padding: 10px 15px;
     border-radius: 6px;
     font-size: 16px;
     border: none;
     cursor: pointer;
-  }
+}
   
-  .change-password {
+.change-password {
     background: #8c4a30;
     color: white;
     margin-right: 10px;
-  }
+}
   
-  .delete-account {
+.delete-account {
     background: #d9534f;
     color: white;
-  }
+}
   
-  .change-password:hover {
+.change-password:hover {
     background: #6b3625;
-  }
+}
   
-  .delete-account:hover {
+.delete-account:hover {
     background: #b52b27;
-  }
+}
   
-  /* Status Badges */
-  .status.approved {
+/* Status Badges */
+.status.approved {
     color: green;
     font-weight: bold;
-  }
+}
   
-  .status.pending {
+.status.pending {
     color: orange;
     font-weight: bold;
-  }
+}
   
-  .available {
+.available {
     color: green;
-  }
+}
   
-  .booked {
+.booked {
     color: red;
-  }
+}
   
-  .add-hotel {
+.add-hotel {
     background: #5a8f4f;
     color: white;
     padding: 10px 15px;
     border-radius: 6px;
-  }
+}
   
-  .search-btn {
+.search-btn {
     background: #8c4a30;
     color: white;
     padding: 10px 15px;
     border-radius: 6px;
-  }
+}
   
-  .search-hotels {
-    background: #f8f0e3;
+/* Search Page Styles */
+.search-hotels {
+    background: linear-gradient(135deg, #f8f0e3, #f4e3d8);
+    border: 2px solid #d4a373;
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
 }
 
+/* Override for search button within the search-hotels section */
+.search-hotels .btn-primary {
+  /* Match the input height (around 38px is common for .form-control-sm) */
+  height: 58px;
+  /* Use the same font size as the input fields */
+  font-size: 15px;
+  /* Use the same padding and border radius for consistency */
+  padding: 0 15px;
+  border-radius: 8px;
+  /* Use a matching border and color */
+  border: 2px solid #d4a373;
+  background: #a45c40;
+  color: white;
+  /* Remove extra margin if any */
+  margin: 0;
+  /* Ensure the button aligns properly with inputs */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.search-hotels .btn-primary:hover {
+  background: #6b3625;
+  transform: scale(1.02);
+}
+  
 .search-filters {
     display: flex;
-    flex-wrap: wrap; /* Improved responsiveness */
-    gap: 15px; /* Slightly larger gap for improved spacing */
+    flex-wrap: wrap;
+    gap: 15px;
     align-items: center;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #d4a373;
+    border-radius: 8px;
+    margin-bottom: 20px;
 }
-
+  
 .input-group {
     display: flex;
-    flex: 1 1 300px; /* Balanced sizing */
+    flex: 1 1 300px;
     gap: 10px;
 }
-
+  
 .form-floating {
     flex: 1;
-    min-width: 200px; /* Prevents fields from shrinking too small */
+    min-width: 200px;
 }
-
+  
 .form-control {
-    font-size: 15px; /* Improved readability */
+    font-size: 15px;
     padding: 12px 15px;
     border: 2px solid #d4a373;
     border-radius: 8px;
     transition: border 0.3s;
 }
-
+  
 .form-control:focus {
     border-color: #a45c40;
     outline: none;
 }
-
+  
 .btn-lg {
     font-size: 16px;
-    padding: 12px 24px; /* Larger and more prominent */
+    padding: 12px 24px;
     background: #a45c40;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s, transform 0.3s;
 }
-
+  
 .btn-lg:hover {
     background: #6b3625;
-    transform: scale(1.05); /* Subtle hover effect */
+    transform: scale(1.05);
 }
-
+  
+.search-results {
+    overflow-x: auto;
+}
+  
 .search-results table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
 }
-
+  
 .search-results th,
 .search-results td {
-  border: 1px solid #d4a373;
-  padding: 12px 15px;
-  text-align: center;
+    border: 1px solid #d4a373;
+    padding: 12px 15px;
+    text-align: center;
 }
-
+  
 .search-results th {
-  background: #a45c40;
-  color: #fff;
-  font-weight: bold;
+    background: #a45c40;
+    color: #fff;
+    font-weight: bold;
 }
-
+  
 .search-results tr:nth-child(even) {
-  background-color: #f8ede3; /* Alternating row color */
+    background-color: #f8ede3;
 }
-
+  
 .search-results tr:hover {
-  background-color: #f0d8c2; /* Highlight row on hover */
+    background-color: #f0d8c2;
 }
-
+  
 .book-now-btn {
-  background: #5a8f4f;
-  color: white;
-  padding: 8px 15px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s;
+    background: #5a8f4f;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
 }
-
+  
 .book-now-btn:hover {
-  background: #3d6e35;
-  transform: scale(1.05); /* Slight zoom effect */
+    background: #3d6e35;
+    transform: scale(1.05);
 }
-
-@media (max-width: 768px) {
-  .search-filters {
-      flex-direction: column;  /* Stack filters vertically */
-      gap: 10px;
-  }
-
-  .input-group {
-      width: 100%;
-  }
-
-  .btn-lg {
-      width: 100%; /* Full-width search button on smaller screens */
-  }
-
-  .search-results th,
-  .search-results td {
-      padding: 10px; /* Reduced padding for smaller screens */
-  }
-}
-
-.search-hotels {
-  background: linear-gradient(135deg, #f8f0e3, #f4e3d8);
-  border: 2px solid #d4a373;
-}
-
-
-.form-control:hover {
-  background-color: #fff5ee;
-  border-color: #a45c40;
-}
-
-
-  /* Modify Button */
+  
+/* New Button Styles for Inline Actions */
 .modify-btn {
-  background: #a45c40;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: none;
+    background: #a45c40;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
 }
-
+  
 .modify-btn:hover {
-  background: #6b3625;
+    background: #6b3625;
 }
-
-/* Review Button */
-.review-btn {
-  background: #5a8f4f;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: none;
+  
+.submit-modification-btn {
+    background: #5a8f4f;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-right: 5px;
 }
-
-/* Cancel Booking Button */
+  
+.submit-modification-btn:hover {
+    background: #3d6e35;
+}
+  
 .cancel-booking-btn {
-  background: #d9534f; /* Red color to indicate cancellation */
-  color: white;
-  padding: 8px 15px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s ease, box-shadow 0.2s ease;
+    background: #d9534f;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s ease, box-shadow 0.2s ease;
 }
-
+  
 .cancel-booking-btn:hover {
-  background: #b52b27; /* Darker red on hover */
-  transform: scale(1.05); /* Slight zoom effect */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow on hover */
-  animation: shake 0.5s ease-in-out; /* Adding shake animation */
+    background: #b52b27;
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    animation: shake 0.5s ease-in-out;
 }
-
+  
 @keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
 }
-
+  
+.review-btn {
+    background: #5a8f4f;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+  
 .review-btn:hover {
-  background: #3d6e35;
+    background: #3d6e35;
 }
-
+  
+/* New styles for review editing buttons */
+.edit-review-btn {
+    background: #8c4a30;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-left: 5px;
+}
+  
+.edit-review-btn:hover {
+    background: #6b3625;
+}
+  
+.cancel-edit-btn {
+    background: #d9534f;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-left: 5px;
+}
+  
+.cancel-edit-btn:hover {
+    background: #b52b27;
+}
+  
 /* Review Input Section */
 .review-input {
-  margin-top: 5px;
-  display: flex;
-  flex-direction: column;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
 }
-
+  
 .review-input input {
-  margin-bottom: 5px;
-  padding: 5px;
-  width: 100%;
+    margin-bottom: 5px;
+    padding: 5px;
+    width: 100%;
 }
-
+  
 .submit-review {
-  background: #8c4a30;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 6px;
+    background: #8c4a30;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
-
+  
 .submit-review:hover {
-  background: #6b3625;
+    background: #6b3625;
 }
-/* Review Button */
-.review-btn {
-  background: #5a8f4f;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: none;
+  
+.cancel-review {
+    background: #d9534f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
-
-.review-btn:hover {
-  background: #3d6e35;
+  
+.cancel-review:hover {
+    background: #b52b27;
 }
-
+  
 /* Review Section */
 .review-section {
-  margin-top: 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
-
+  
 /* Star Rating */
 .stars {
-  margin: 5px 0;
-  font-size: 20px;
-  cursor: pointer;
+    margin: 5px 0;
+    font-size: 20px;
+    cursor: pointer;
 }
-
+  
 .star {
-  color: gray;
-  margin-right: 5px;
-  transition: color 0.3s;
+    color: gray;
+    margin-right: 5px;
+    transition: color 0.3s;
 }
-
+  
 .star.selected {
-  color: gold;
+    color: gold;
 }
-
-/* Review Input */
-.review-section input {
-  margin-bottom: 5px;
-  padding: 5px;
-  width: 100%;
+  
+.form-control:hover {
+    background-color: #fff5ee;
+    border-color: #a45c40;
 }
-
-.submit-review {
-  background: #8c4a30;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 6px;
-}
-
-.submit-review:hover {
-  background: #6b3625;
-}
-.cancel-review {
-  background: #d9534f;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 6px;
-  margin-left: 10px;
-}
-
-.cancel-review:hover {
-  background: #b52b27;
+  
+@media (max-width: 768px) {
+    .search-filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+  
+    .input-group {
+        width: 100%;
+    }
+  
+    .btn-lg {
+        width: 100%;
+    }
+  
+    .search-results th,
+    .search-results td {
+        padding: 10px;
+    }
 }

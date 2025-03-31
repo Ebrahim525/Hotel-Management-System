@@ -115,7 +115,7 @@ function AdminDashboard() {
       }
     };
 
-    fetchHotels();
+      fetchHotels();
   }, [currentPage, hotelSearchQuery]);
 
 

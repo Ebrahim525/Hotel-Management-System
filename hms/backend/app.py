@@ -103,8 +103,13 @@ def manager_dashboard():
     return "Welcome to the Manager Dashboard!"
 
 @app.route('/guest')
+@jwt_required()
 def guest_dashboard():
-    return "Welcome to the Guest Dashboard!"
+    claims = get_jwt()
+    if claims.get("usertype") == "Guest":
+        return jsonify({"message": "Welcome to the Guest Dashboard!"})
+    return jsonify({"error": "Unauthorized access!"}), 403
+
 
 # Run the app
 if __name__ == "__main__":
