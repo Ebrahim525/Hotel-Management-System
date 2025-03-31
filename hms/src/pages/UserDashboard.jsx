@@ -365,33 +365,26 @@ const UserDashboard = () => {
           </p>
           <p>
             <strong>Email Address:</strong>{" "}
-            {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                value={userProfile.email || ""}
-                onChange={handleProfileChange}
-                className="form-control form-control-sm"
-                style={inputStyle}
-              />
-            ) : (
-              userProfile.email
-            )}
+            {userProfile.email}
           </p>
+
           {isEditing ? (
-            <>
+            <div className="d-flex justify-content-center gap-2">
               <button className="btn save-profile" onClick={saveProfileChanges}>
                 Save
               </button>
               <button className="btn cancel-profile" onClick={toggleEditProfile}>
                 Cancel
               </button>
-            </>
+            </div>
           ) : (
-            <button className="btn edit-profile" onClick={toggleEditProfile}>
-              Edit Profile
-            </button>
+            <div className="d-flex justify-content-center">
+              <button className="btn edit-profile" onClick={toggleEditProfile}>
+                Edit Profile
+              </button>
+            </div>
           )}
+          
           {profileMessage && <p className="error-msg">{profileMessage}</p>}
         </div>
       </div>
