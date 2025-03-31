@@ -28,7 +28,7 @@
     background: #8c4a30;
     padding: 8px 15px;
     border-radius: 6px;
-    transition: background 0.3s;
+    transition: 0.3s;
 }
   
 .user-dashboard .home-btn:hover {
@@ -91,44 +91,8 @@
     padding: 10px 20px;
     border-radius: 6px;
     color: white;
-    cursor: pointer;
-    transition: background 0.3s;
 }
   
-.edit-profile:hover {
-    background: #6b3625;
-}
-
-/* New Profile Buttons */
-.save-profile {
-    background: #5a8f4f;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    margin-right: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.save-profile:hover {
-    background: #3d6e35;
-}
-
-.cancel-profile {
-    background: #d9534f;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.cancel-profile:hover {
-    background: #b52b27;
-}
-
 .account-settings {
     margin-top: 30px;
     padding: 20px;
@@ -204,10 +168,8 @@
     border-radius: 6px;
 }
   
-/* Search Page Styles */
 .search-hotels {
-    background: linear-gradient(135deg, #f8f0e3, #f4e3d8);
-    border: 2px solid #d4a373;
+    background: #f8f0e3;
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -336,11 +298,55 @@
 }
   
 .book-now-btn:hover {
-    background: #3d6e35;
-    transform: scale(1.05);
+  background: #3d6e35;
+  transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Plain Button - additional styling for any plain buttons */
+.plain-btn {
+  background: transparent;
+  border: none;
+  color: #a45c40;
+  font-weight: bold;
+  padding: 5px 10px;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+.plain-btn:hover {
+  color: #6b3625;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .search-filters {
+      flex-direction: column;  /* Stack filters vertically */
+      gap: 10px;
+  }
+  
+  .input-group {
+      width: 100%;
+  }
+  
+  .btn-lg {
+      width: 100%; /* Full-width search button on smaller screens */
+  }
+  
+  .search-results th,
+  .search-results td {
+      padding: 10px; /* Reduced padding for smaller screens */
+  }
 }
   
-/* New Button Styles for Inline Actions */
+.search-hotels {
+  background: linear-gradient(135deg, #f8f0e3, #f4e3d8);
+  border: 2px solid #d4a373;
+}
+  
+.form-control:hover {
+  background-color: #fff5ee;
+  border-color: #a45c40;
+}
+  
+/* Modify Button */
 .modify-btn {
     background: #a45c40;
     color: white;
@@ -355,21 +361,20 @@
     background: #6b3625;
 }
   
-.submit-modification-btn {
-    background: #5a8f4f;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-right: 5px;
+/* Review Button */
+.review-btn {
+  background: #5a8f4f;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
 }
   
-.submit-modification-btn:hover {
-    background: #3d6e35;
+.review-btn:hover {
+  background: #3d6e35;
 }
   
+/* Cancel Booking Button */
 .cancel-booking-btn {
     background: #d9534f;
     color: white;
@@ -393,93 +398,6 @@
     50% { transform: translateX(5px); }
     75% { transform: translateX(-5px); }
     100% { transform: translateX(0); }
-}
-  
-.review-btn {
-    background: #5a8f4f;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-  
-.review-btn:hover {
-    background: #3d6e35;
-}
-  
-/* New styles for review editing buttons */
-.edit-review-btn {
-    background: #8c4a30;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-left: 5px;
-}
-  
-.edit-review-btn:hover {
-    background: #6b3625;
-}
-  
-.cancel-edit-btn {
-    background: #d9534f;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-left: 5px;
-}
-  
-.cancel-edit-btn:hover {
-    background: #b52b27;
-}
-  
-/* Review Input Section */
-.review-input {
-    margin-top: 5px;
-    display: flex;
-    flex-direction: column;
-}
-  
-.review-input input {
-    margin-bottom: 5px;
-    padding: 5px;
-    width: 100%;
-}
-  
-.submit-review {
-    background: #8c4a30;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-  
-.submit-review:hover {
-    background: #6b3625;
-}
-  
-.cancel-review {
-    background: #d9534f;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 6px;
-    margin-left: 10px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-  
-.cancel-review:hover {
-    background: #b52b27;
 }
   
 /* Review Section */
@@ -507,27 +425,34 @@
     color: gold;
 }
   
-.form-control:hover {
-    background-color: #fff5ee;
-    border-color: #a45c40;
+/* Review Input */
+.review-section input {
+  margin-bottom: 5px;
+  padding: 5px;
+  width: 100%;
 }
   
-@media (max-width: 768px) {
-    .search-filters {
-        flex-direction: column;
-        gap: 10px;
-    }
+.submit-review {
+  background: #8c4a30;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
   
-    .input-group {
-        width: 100%;
-    }
+.submit-review:hover {
+  background: #6b3625;
+}
   
-    .btn-lg {
-        width: 100%;
-    }
+.cancel-review {
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  margin-left: 10px;
+}
   
-    .search-results th,
-    .search-results td {
-        padding: 10px;
-    }
+.cancel-review:hover {
+  background: #b52b27;
 }

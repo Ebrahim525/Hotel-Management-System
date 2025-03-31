@@ -1,0 +1,254 @@
+[1mdiff --git a/hms/backend/instance/hms.db b/hms/backend/instance/hms.db[m
+[1mindex d22af58..a456dad 100644[m
+Binary files a/hms/backend/instance/hms.db and b/hms/backend/instance/hms.db differ
+[1mdiff --git a/hms/backend/models/__pycache__/models.cpython-311.pyc b/hms/backend/models/__pycache__/models.cpython-311.pyc[m
+[1mindex 2a923c6..efdd88d 100644[m
+Binary files a/hms/backend/models/__pycache__/models.cpython-311.pyc and b/hms/backend/models/__pycache__/models.cpython-311.pyc differ
+[1mdiff --git a/hms/backend/user/__pycache__/routes.cpython-311.pyc b/hms/backend/user/__pycache__/routes.cpython-311.pyc[m
+[1mindex 15666b6..7143301 100644[m
+Binary files a/hms/backend/user/__pycache__/routes.cpython-311.pyc and b/hms/backend/user/__pycache__/routes.cpython-311.pyc differ
+[1mdiff --git a/hms/backend/user/routes.py b/hms/backend/user/routes.py[m
+[1mindex 5228acc..02a79bf 100644[m
+[1m--- a/hms/backend/user/routes.py[m
+[1m+++ b/hms/backend/user/routes.py[m
+[36m@@ -8,6 +8,7 @@[m [mALLOWED_ROOM_TYPES = {"Deluxe", "Suite", "Standard"}[m
+ [m
+ user_bp = Blueprint('user_bp', __name__)[m
+ [m
+[32m+[m[32m# ------------------- Edit Profile -------------------[m
+ @user_bp.route('/profile/edit', methods=['PUT'])[m
+ @jwt_required()[m
+ def edit_profile():[m
+[36m@@ -16,7 +17,7 @@[m [mdef edit_profile():[m
+ [m
+     # Extract new data[m
+     new_fullname = data.get('fullname')[m
+[31m-    # new_email = data.get('email')  <-- No longer needed[m
+[32m+[m[32m    new_email = data.get('email')[m
+ [m
+     # Find the user[m
+     user = User.query.filter_by(email=current_user_email).first()[m
+[36m@@ -26,16 +27,21 @@[m [mdef edit_profile():[m
+     # Update profile data[m
+     if new_fullname:[m
+         user.username = new_fullname[m
+[31m-[m
+[31m-    # Remove or comment out the email update block[m
+[31m-    # if new_email:[m
+[31m-    #     existing_user = User.query.filter_by(email=new_email).first()[m
+[31m-    #     if existing_user and existing_user.id != user.id:[m
+[31m-    #         return jsonify({"error": "Email already exists!"}), 409[m
+[31m-    #     user.email = new_email[m
+[32m+[m[32m    if new_email:[m
+[32m+[m[32m        existing_user = User.query.filter_by(email=new_email).first()[m
+[32m+[m[32m        if existing_user and existing_user.id != user.id:[m
+[32m+[m[32m            return jsonify({"error": "Email already exists!"}), 409[m
+[32m+[m[32m        user.email = new_email[m
+ [m
+     db.session.commit()[m
+ [m
+[32m+[m[32m    return jsonify({[m
+[32m+[m[32m        "message": "Profile updated successfully!",[m
+[32m+[m[32m        "new_fullname": user.username,[m
+[32m+[m[32m        "new_email": user.email[m
+[32m+[m[32m    })[m
+[32m+[m
+[32m+[m
+ # ------------------- Get User Dashboard -------------------[m
+ @user_bp.route('/dashboard', methods=['GET'])[m
+ @jwt_required()[m
+[36m@@ -89,10 +95,15 @@[m [mdef cancel_booking(booking_id):[m
+     if not booking:[m
+         return jsonify({"error": "Booking not found!"}), 404[m
+ [m
+[31m-    # Delete the booking completely from the database[m
+[31m-    db.session.delete(booking)[m
+[31m-    db.session.commit()[m
+[31m-    return jsonify({"message": "Booking cancelled and deleted successfully!"})[m
+[32m+[m[32m    if booking.booking_status == "Cancelled":[m
+[32m+[m[32m        return jsonify({"message": "Booking is already cancelled."})[m
+[32m+[m
+[32m+[m[32m    if booking.check_in_date > datetime.now(timezone.utc).date():[m
+[32m+[m[32m        booking.booking_status = "Cancelled"[m
+[32m+[m[32m        db.session.commit()[m
+[32m+[m[32m        return jsonify({"message": "Booking cancelled successfully!"})[m
+[32m+[m[32m    else:[m
+[32m+[m[32m        return jsonify({"error": "Cancellation not allowed after check-in date."}), 403[m
+ [m
+ [m
+ # ------------------- Make a New Booking -------------------[m
+[36m@@ -118,6 +129,11 @@[m [mdef new_booking():[m
+ [m
+     hotel_id = room.hotel_id[m
+ [m
+[32m+[m[32m    # Ensure the hotel is approved before proceeding with booking[m
+[32m+[m[32m    hotel = Hotel.query.filter_by(id=hotel_id).first()[m
+[32m+[m[32m    if hotel and hotel.status not in ["Approved"]:[m
+[32m+[m[32m        return jsonify({"error": "Hotel is not approved for booking."}), 400[m
+[32m+[m
+     try:[m
+         check_in_date = datetime.strptime(check_in, '%Y-%m-%d').date()[m
+         check_out_date = datetime.strptime(check_out, '%Y-%m-%d').date()[m
+[36m@@ -148,84 +164,13 @@[m [mdef new_booking():[m
+         hotel_id=hotel_id,[m
+         check_in_date=check_in_date,[m
+         check_out_date=check_out_date,[m
+[31m-        booking_status="Pending"  # Set status to Pending[m
+[32m+[m[32m        booking_status="Confirmed"[m
+     )[m
+     db.session.add(new_booking)[m
+     db.session.commit()[m
+ [m
+     return jsonify({"message": "Booking created successfully!", "booking_id": new_booking.id})[m
+ [m
+[31m-[m
+[31m-# ------------------- Update Booking -------------------[m
+[31m-@user_bp.route('/booking/update/<int:booking_id>', methods=['PUT'])[m
+[31m-@jwt_required()[m
+[31m-def update_booking(booking_id):[m
+[31m-    current_user_email = get_jwt_identity()[m
+[31m-    user = User.query.filter_by(email=current_user_email).first()[m
+[31m-    if not user:[m
+[31m-        return jsonify({"error": "User not found!"}), 404[m
+[31m-[m
+[31m-    booking = Booking.query.filter_by(id=booking_id, user_id=user.id).first()[m
+[31m-    if not booking:[m
+[31m-        return jsonify({"error": "Booking not found!"}), 404[m
+[31m-[m
+[31m-    # Prevent modification if check-in has already started[m
+[31m-    if booking.check_in_date <= datetime.utcnow().date():[m
+[31m-        return jsonify({"error": "Cannot modify booking after check-in date."}), 403[m
+[31m-[m
+[31m-    data = request.json[m
+[31m-    new_room_type = data.get('room_type')[m
+[31m-    new_check_in = data.get('check_in')[m
+[31m-    new_check_out = data.get('check_out')[m
+[31m-[m
+[31m-    # Validate room type if provided[m
+[31m-    if new_room_type and new_room_type not in ALLOWED_ROOM_TYPES:[m
+[31m-        return jsonify({"error": f"Invalid room type. Allowed values: {', '.join(ALLOWED_ROOM_TYPES)}."}), 400[m
+[31m-[m
+[31m-    new_check_in_date = booking.check_in_date[m
+[31m-    new_check_out_date = booking.check_out_date[m
+[31m-    if new_check_in:[m
+[31m-        try:[m
+[31m-            new_check_in_date = datetime.strptime(new_check_in, '%Y-%m-%d').date()[m
+[31m-        except ValueError:[m
+[31m-            return jsonify({"error": "Invalid check-in date format. Please use YYYY-MM-DD."}), 400[m
+[31m-    if new_check_out:[m
+[31m-        try:[m
+[31m-            new_check_out_date = datetime.strptime(new_check_out, '%Y-%m-%d').date()[m
+[31m-        except ValueError:[m
+[31m-            return jsonify({"error": "Invalid check-out date format. Please use YYYY-MM-DD."}), 400[m
+[31m-[m
+[31m-    # Ensure new check-in date is not in the past[m
+[31m-    today = datetime.utcnow().date()[m
+[31m-    if new_check_in_date < today:[m
+[31m-        return jsonify({"error": "Check-in date cannot be in the past."}), 400[m
+[31m-[m
+[31m-    if new_check_in_date >= new_check_out_date:[m
+[31m-        return jsonify({"error": "Check-out date must be after check-in date."}), 400[m
+[31m-[m
+[31m-    overlapping_booking = Booking.query.filter([m
+[31m-        Booking.room_id == booking.room_id,[m
+[31m-        Booking.id != booking.id,[m
+[31m-        Booking.booking_status == "Confirmed",[m
+[31m-        Booking.check_in_date < new_check_out_date,[m
+[31m-        Booking.check_out_date > new_check_in_date[m
+[31m-    ).first()[m
+[31m-[m
+[31m-    if overlapping_booking:[m
+[31m-        return jsonify({"error": "The new dates clash with an existing booking for this room."}), 400[m
+[31m-[m
+[31m-    if new_room_type:[m
+[31m-        booking.room_type = new_room_type[m
+[31m-    booking.check_in_date = new_check_in_date[m
+[31m-    booking.check_out_date = new_check_out_date[m
+[31m-[m
+[31m-    # Set status to Pending after update[m
+[31m-    booking.booking_status = "Pending"[m
+[31m-[m
+[31m-    db.session.commit()[m
+[31m-    return jsonify({"message": "Booking updated successfully!"})[m
+[31m-[m
+[31m-[m
+ # ------------------- Submit Booking Review -------------------[m
+ @user_bp.route('/booking/review/<int:booking_id>', methods=['POST'])[m
+ @jwt_required()[m
+[36m@@ -262,7 +207,7 @@[m [mdef submit_review(booking_id):[m
+ @user_bp.route('/hotels/search', methods=['GET'])[m
+ def search_hotels():[m
+     location = request.args.get('location', type=str)[m
+[31m-    hotel_name = request.args.get('hotel_name', type=str)  # <-- Extract hotel name[m
+[32m+[m[32m    hotel_name = request.args.get('hotel_name', type=str)[m
+     required_capacity = request.args.get('guests', default=1, type=int)[m
+     check_in = request.args.get('check_in')[m
+     check_out = request.args.get('check_out')[m
+[36m@@ -271,19 +216,23 @@[m [mdef search_hotels():[m
+     min_rating = request.args.get('min_rating', type=float)[m
+     room_type = request.args.get('room_type', type=str)[m
+ [m
+[31m-    # If a room type filter is provided, validate it.[m
+[32m+[m[32m    # Validate room type filter if provided[m
+     if room_type and room_type not in ALLOWED_ROOM_TYPES:[m
+         return jsonify({"error": f"Invalid room type filter. Allowed values: {', '.join(ALLOWED_ROOM_TYPES)}."}), 400[m
+ [m
+[31m-    query = Hotel.query[m
+[32m+[m[32m    # Start with filtering only approved hotels[m
+[32m+[m[32m    query = Hotel.query.filter(Hotel.status == "Approved")[m
+[32m+[m[41m    [m
+[32m+[m[32m    # Apply additional filters if provided[m
+     if location:[m
+         query = query.filter(Hotel.location.ilike(f"%{location}%"))[m
+[31m-    if hotel_name:  # <-- Add filtering for hotel name[m
+[32m+[m[32m    if hotel_name:[m
+         query = query.filter(Hotel.hotel_name.ilike(f"%{hotel_name}%"))[m
+     if min_rating is not None:[m
+         query = query.filter(Hotel.rating >= min_rating)[m
+     [m
+[31m-    hotels = query.all()[m
+[32m+[m[32m    hotels = query.all()  # Fetch the approved hotels with all applied filters[m
+[32m+[m
+     available_hotels = [][m
+ [m
+     for hotel in hotels:[m
+[36m@@ -296,28 +245,32 @@[m [mdef search_hotels():[m
+             except ValueError:[m
+                 return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400[m
+ [m
+[32m+[m[32m            # Filter rooms based on booking status and date range[m
+             free_rooms_query = ([m
+                 Room.query[m
+                 .filter(Room.hotel_id == hotel.id)[m
+                 .filter(~Room.bookings.any([m
+[31m-                    (Booking.booking_status == "Confirmed") &[m
+[31m-                    (Booking.check_in_date < check_out_date) &[m
+[32m+[m[32m                    (Booking.booking_status == "Confirmed") &[m[41m [m
+[32m+[m[32m                    (Booking.check_in_date < check_out_date) &[m[41m [m
+                     (Booking.check_out_date > check_in_date)[m
+                 ))[m
+             )[m
+         else:[m
+             free_rooms_query = Room.query.filter(Room.hotel_id == hotel.id)[m
+         [m
+[32m+[m[32m        # Apply price range filter[m
+         if min_price is not None:[m
+             free_rooms_query = free_rooms_query.filter(Room.price_per_night >= min_price)[m
+         if max_price is not None:[m
+             free_rooms_query = free_rooms_query.filter(Room.price_per_night <= max_price)[m
+ [m
+[32m+[m[32m        # Filter by room type if provided[m
+         if room_type:[m
+             free_rooms_query = free_rooms_query.filter(Room.room_type == room_type)[m
+ [m
+         free_rooms = free_rooms_query.all()[m
+ [m
+[32m+[m[32m        # Further filter based on capacity[m
+         matching_rooms = [room for room in free_rooms if room.capacity >= required_capacity][m
+ [m
+         if matching_rooms:[m
+[36m@@ -340,3 +293,4 @@[m [mdef search_hotels():[m
+         return jsonify({"message": "No available hotels match your criteria."}), 404[m
+ [m
+     return jsonify({"results": available_hotels})[m
+[41m+[m
