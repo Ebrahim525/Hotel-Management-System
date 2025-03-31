@@ -59,7 +59,7 @@ def delete_booking(booking_id):
     
     room = Room.query.get(booking.room_id)
     if room:
-        room.availability += 1
+        room.capacity += 1
 
     db.session.delete(booking)
     db.session.flush()
