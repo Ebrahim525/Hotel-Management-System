@@ -72,7 +72,6 @@ const BookNowModal = ({ show, onHide, onSubmit, hotel, room }) => {
   );
 };
 
-
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState("profile");
@@ -175,7 +174,7 @@ const UserDashboard = () => {
       await axiosInstance.put(`/user/booking/update/${bookingId}`, newDates);
       fetchUserDashboard();
       setEditingBooking(null);
-      setModificationMessage("Modifications were successful!");
+      setModificationMessage("Booking updated successfully! (Status set to Pending)");
       setTimeout(() => setModificationMessage(""), 5000);
     } catch (error) {
       console.error("Error sending modification request:", error.response || error);
@@ -191,7 +190,7 @@ const UserDashboard = () => {
       try {
         await axiosInstance.delete(`/user/booking/cancel/${bookingId}`);
         fetchUserDashboard();
-        alert("Your cancellation request has been sent.");
+        alert("Booking cancelled and deleted successfully!");
       } catch (error) {
         console.error("Error cancelling booking:", error.response || error);
       }
@@ -305,7 +304,7 @@ const UserDashboard = () => {
       })
       .then((response) => {
         alert(
-          `Booking confirmed for ${selectedHotel.hotel_name} (${selectedRoom.room_type}) from ${checkInDate} to ${checkOutDate}!`
+          `Booking created successfully! (Status set to Pending) for ${selectedHotel.hotel_name} (${selectedRoom.room_type}) from ${checkInDate} to ${checkOutDate}!`
         );
         fetchUserDashboard();
       })
@@ -366,33 +365,26 @@ const UserDashboard = () => {
           </p>
           <p>
             <strong>Email Address:</strong>{" "}
-            {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                value={userProfile.email || ""}
-                onChange={handleProfileChange}
-                className="form-control form-control-sm"
-                style={inputStyle}
-              />
-            ) : (
-              userProfile.email
-            )}
+            {userProfile.email}
           </p>
+
           {isEditing ? (
-            <>
+            <div className="d-flex justify-content-center gap-2">
               <button className="btn save-profile" onClick={saveProfileChanges}>
                 Save
               </button>
               <button className="btn cancel-profile" onClick={toggleEditProfile}>
                 Cancel
               </button>
-            </>
+            </div>
           ) : (
-            <button className="btn edit-profile" onClick={toggleEditProfile}>
-              Edit Profile
-            </button>
+            <div className="d-flex justify-content-center">
+              <button className="btn edit-profile" onClick={toggleEditProfile}>
+                Edit Profile
+              </button>
+            </div>
           )}
+          
           {profileMessage && <p className="error-msg">{profileMessage}</p>}
         </div>
       </div>
@@ -773,3 +765,4 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
+
