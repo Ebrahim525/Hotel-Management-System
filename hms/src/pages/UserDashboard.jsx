@@ -365,15 +365,22 @@ const UserDashboard = () => {
           </p>
           <p>
             <strong>Email Address:</strong>{" "}
+            {/* In edit mode, display as plain text rather than an input */}
             {userProfile.email}
           </p>
 
           {isEditing ? (
             <div className="d-flex justify-content-center gap-2">
-              <button className="btn save-profile" onClick={saveProfileChanges}>
+              <button
+                className="btn btn-success save-profile"
+                onClick={saveProfileChanges}
+              >
                 Save
               </button>
-              <button className="btn cancel-profile" onClick={toggleEditProfile}>
+              <button
+                className="btn btn-danger cancel-profile"
+                onClick={toggleEditProfile}
+              >
                 Cancel
               </button>
             </div>
@@ -453,13 +460,13 @@ const UserDashboard = () => {
                     ) : editingBooking === booking.booking_id ? (
                       <>
                         <button
-                          className="btn submit-modification-btn"
+                          className="btn btn-primary submit-modification-btn"
                           onClick={() => handleSubmitModification(booking.booking_id)}
                         >
                           Submit Modification Request
                         </button>
                         <button
-                          className="btn cancel-edit-btn"
+                          className="btn btn-warning cancel-edit-btn"
                           onClick={() => setEditingBooking(null)}
                         >
                           Cancel
