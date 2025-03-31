@@ -17,6 +17,9 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   // Handle Input Change
+
+  sessionStorage.removeItem("token");
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

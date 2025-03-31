@@ -49,7 +49,7 @@ def login():
     if user and bcrypt.check_password_hash(user.password, password):
         access_token = create_access_token(
             identity=user.email,
-            additional_claims={"usertype": user.usertype}
+            additional_claims={"usertype": user.usertype, "user_id": user.id}
         )
         return jsonify({
             "message": "Login successful!",

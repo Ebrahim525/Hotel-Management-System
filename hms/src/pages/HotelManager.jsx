@@ -3,83 +3,262 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./HotelManagerDashboard.css";
 import profilePhoto from "./Images/profile.png";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import axiosInstance from "../services/axiosInstance";
 
 
 const HotelManagerDashboard = () => {
   const [page, setPage] = useState("profile");
-  const [hotels, setHotels] = useState([
-    { 
-      name: "Luxury Inn", 
-      location: "Pattikkaadu",
-      roomTypes: [
-        { type: "Deluxe Suite", price: 150, availability: 5 },
-        { type: "Standard Room", price: 80, availability: 3 },
-      ] 
-    }
-  ]);
+  const [hotels, setHotels] = useState([]);
   const [selectedHotelIndex, setSelectedHotelIndex] = useState(0);
   const [newHotel, setNewHotel] = useState({ name: "", location: "" });
   const [newRoomType, setNewRoomType] = useState({ type: "", price: "", availability: "" });
   const [editingRoomType, setEditingRoomType] = useState(null);
-  const [profile, setProfile] = useState({
-    name: "Michael Johnson",
-    email: "micxhael@luxuryinn.com",
-    hotel: "Luxury Inn",
-    location: "Pattikkaadu"
-  });
+
+
+  const [profile, setProfile] = useState([]);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await axiosInstance.get("/hotel/profile");
+        console.log(response.data);
+        setProfile(response.data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+  
+    fetchProfile();
+  }, []);
+  
+
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [bookings, setBookings] = useState([
-    { id: "#B001", user: "John Doe", room: "Deluxe Suite", checkIn: "2025-04-15", checkOut: "2025-04-20" },
-    { id: "#B002", user: "Jane Smith", room: "Standard Room", checkIn: "2025-04-18", checkOut: "2025-04-22" },
-  ]);
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+      const response = await axiosInstance.get(`/hotel/bookings`);
+      console.log(response.data);
+      setBookings(response.data);
+      }
+      catch(error){
+        console.error("Error:", error.response || error);
+      }
+    };
+
+    fetchBookings();
+  }, []);
 
 
-  const handleAddOrUpdateRoomType = () => {
-    if (!newRoomType.type || !newRoomType.price || !newRoomType.availability) return;
+  useEffect(() => {
+    const fetchHotels = async () => {
+      const token = sessionStorage.getItem("token");
+      try {
+        const response = await fetch("http://127.0.0.1:5000/hotel/get-hotels", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
   
-    setHotels(hotels.map((hotel, index) => 
-      index === selectedHotelIndex
-        ? {
-            ...hotel,
-            roomTypes: editingRoomType
-              ? hotel.roomTypes.map(room => 
-                  room.type === editingRoomType?.type ? { ...newRoomType } : room
-                )
-              : [...hotel.roomTypes, { ...newRoomType }]
-          }
-        : hotel
-    ));
+        const data = await response.json();
   
-    setNewRoomType({ 
-      ...newRoomType, 
-      price: Number(e.target.value), 
-      availability: Number(e.target.value) 
-    });
-    
-    setEditingRoomType(null);
+        if (response.ok) {
+          // Map API data to frontend hotel format
+          const formattedHotels = data.hotels.map((hotel) => ({
+            id: hotel.id,
+            name: hotel.name,
+            location: hotel.location,
+            roomTypes: hotel.rooms.map((room) => ({
+              room_id: room.room_id,
+              type: room.type,
+              price: room.price,
+              availability: room.availability,
+            })),
+          }));
+  
+          setHotels(formattedHotels);
+        } else {
+          console.error("Error fetching hotels:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching hotels:", error);
+      }
+    };
+  
+    fetchHotels();
+  }, []);
+  
+  
+  
+
+
+  const handleAddOrUpdateRoomType = async () => {
+    if (!newRoomType.type || !newRoomType.price || !newRoomType.availability) {
+      alert("❌ Please fill all fields before submitting.");
+      return;
+    }
+  
+    const token = sessionStorage.getItem("token");
+  
+    try {
+      let url = "http://127.0.0.1:5000/hotel/add-room";
+      let method = "POST";
+  
+      const bodyData = {
+        hotel_id: hotels[selectedHotelIndex]?.id,
+        room_type: newRoomType.type,
+        price_per_night: Number(newRoomType.price),
+        availability: Number(newRoomType.availability),
+      };
+
+      // console.log("Request body being sent:", bodyData);
+      console.log("Selected hotel index:", selectedHotelIndex);
+      console.log("Selected hotel object:", hotels[selectedHotelIndex]);
+
+  
+      // If editing an existing room
+      if (editingRoomType) {
+        url = `http://127.0.0.1:5000/hotel/edit-room/${editingRoomType.room_id}`;
+        method = "PATCH";
+      }
+  
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(bodyData),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert(`✅ ${data.success}`);
+        // Update or add room in the frontend state
+        setHotels(
+          hotels.map((hotel, index) =>
+            index === selectedHotelIndex
+              ? {
+                  ...hotel,
+                  roomTypes: editingRoomType
+                    ? hotel.roomTypes.map((room) =>
+                        room.room_id === editingRoomType.room_id
+                          ? { ...newRoomType, room_id: editingRoomType.room_id }
+                          : room
+                      )
+                    : [
+                        ...hotel.roomTypes,
+                        { ...newRoomType, room_id: data.room_id }, // Add new room
+                      ],
+                }
+              : hotel
+          )
+        );
+  
+        // Clear the form after adding/updating
+        setNewRoomType({ type: "", price: "", availability: "" });
+        setEditingRoomType(null);
+      } else {
+        alert(`❌ ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error updating/adding room:", error);
+      alert("❌ An error occurred while updating/adding the room.");
+    }
   };
   
-
-  const handleAddHotel = () => {
-    if (!newHotel.name || !newHotel.location) return;
   
-    setHotels([...hotels, { ...newHotel, roomTypes: [] }]);
-    setNewHotel({ name: "", location: "" });
-  };
   
 
+  // const handleAddHotel = () => {
+  //   if (!newHotel.name || !newHotel.location) return;
+  
+  //   setHotels([...hotels, { ...newHotel, roomTypes: [] }]);
+  //   setNewHotel({ name: "", location: "" });
+  // };
 
-  const handleDeleteRoomType = (type) => {
-    setHotels(hotels.map((hotel, index) => 
-      index === selectedHotelIndex
-        ? {
-            ...hotel,
-            roomTypes: hotel.roomTypes.filter(room => room.type !== type)
-          }
-        : hotel
-    ));
+  const handleAddHotel = async () => {
+    if (!newHotel.name || !newHotel.location) {
+      alert("❌ Please enter hotel name and location.");
+      return;
+    }
+  
+    const token = sessionStorage.getItem("token");
+  
+    try {
+      const response = await fetch("http://127.0.0.1:5000/hotel/add-hotel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          hotel_name: newHotel.name,
+          location: newHotel.location,
+          rating: 0, // Default rating
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert(`✅ ${data.success}`);
+        setHotels([...hotels, { ...newHotel, roomTypes: [] }]);
+        setNewHotel({ name: "", location: "" });
+      } else {
+        alert(`❌ ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error adding hotel:", error);
+      alert("❌ An error occurred while adding the hotel.");
+    }
   };
+  
+  
 
+
+  const handleDeleteRoomType = async (room_id) => {
+    const token = sessionStorage.getItem("token");
+  
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/hotel/delete-room/${room_id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert(`✅ ${data.success}`);
+        // Update state after successful deletion
+        setHotels(
+          hotels.map((hotel, index) =>
+            index === selectedHotelIndex
+              ? {
+                  ...hotel,
+                  roomTypes: hotel.roomTypes.filter(
+                    (room) => room.room_id !== room_id
+                  ),
+                }
+              : hotel
+          )
+        );
+      } else {
+        alert(`❌ ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error deleting room type:", error);
+      alert("❌ An error occurred while deleting the room.");
+    }
+  };
+  
 
   const handleEditRoomType = (room) => {
     setNewRoomType({ ...room }); // Spread the object to create a new instance
@@ -94,19 +273,103 @@ const HotelManagerDashboard = () => {
   };
 
 
-  const handleCancelBooking = (id) => {
-    setBookings(bookings.filter((booking) => booking.id !== id));
-  };
-
-
   const handleProfileEditToggle = () => {
     setIsEditingProfile(!isEditingProfile);
   };
 
 
-  const handleProfileChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
+  const handleUpdateUsername = async (newName) => {
+    // Validate input
+    if (typeof newName !== 'string' || newName.trim() === '') {
+        alert('❌ Please enter a valid username');
+        return false; // Return false to indicate failure
+    }
+
+    const trimmedName = newName.trim();
+    const token = sessionStorage.getItem("token");
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/hotel/edit", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ username: trimmedName }),
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert(`✅ ${data.success}`);
+            return true; // Return true to indicate success
+        } else {
+            alert(`❌ ${data.error || 'Failed to update username'}`);
+            return false;
+        }
+    } catch (error) {
+        console.error("Error updating name:", error);
+        alert("❌ An error occurred while updating the name.");
+        return false;
+    }
+};
+  
+
+  //
+  const handleConfirmBooking = async (id) => {
+    const token = sessionStorage.getItem("token");
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/hotel/confirm/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        alert(`✅ ${data.success}`);
+        setBookings(
+          bookings.map((booking) =>
+            booking.booking_id === id
+              ? { ...booking, booking_status: "Confirmed" }
+              : booking
+          )
+        );
+      } else {
+        alert(`❌ ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error confirming booking:", error);
+      alert("❌ An error occurred while confirming the booking.");
+    }
   };
+
+  const handleDeleteBooking = async (id) => {
+    const token = sessionStorage.getItem("token");
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/hotel/remove/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        alert(`✅ ${data.success}`);
+        setBookings(bookings.filter((booking) => booking.booking_id !== id));
+      } else {
+        alert(`❌ ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+      alert("❌ An error occurred while deleting the booking.");
+    }
+  };
+
+  
 
 
   const content = {
@@ -117,17 +380,28 @@ const HotelManagerDashboard = () => {
           <img className="ProfilePh" src={profilePhoto} alt="Profile" />
           {isEditingProfile ? (
             <div>
-              <input type="text" name="name" value={profile.name} onChange={handleProfileChange} />
-              <input type="email" name="email" value={profile.email} onChange={handleProfileChange} />
-              <input type="text" name="hotel" value={profile.hotel} onChange={handleProfileChange} />
-              <button className="btn save-profile" onClick={handleProfileEditToggle}>Save</button>
+              <input 
+                type="text" 
+                value={profile.username || ''} 
+                onChange={(e) => setProfile({...profile, username: e.target.value})}
+              /> 
+              <button 
+                className="btn save-profile" 
+                onClick={() => {
+                  handleUpdateUsername(profile.username);
+                  handleProfileEditToggle();
+                }}
+              >
+                Save
+              </button>
             </div>
           ) : (
             <div>
-              <p><strong>Manager Name:</strong> {profile.name}</p>
+              <p><strong>Manager Name:</strong> {profile.username}</p>
               <p><strong>Email:</strong> {profile.email}</p>
-              <p><strong>Hotel Name:</strong> {profile.hotel}</p>
-              <button className="btn edit-profile" onClick={handleProfileEditToggle}>Edit Profile</button>
+              <button className="btn edit-profile" onClick={handleProfileEditToggle}>
+                Edit Profile
+              </button>
             </div>
           )}
         </div>
@@ -169,14 +443,24 @@ const HotelManagerDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {hotels[selectedHotelIndex].roomTypes.map((room) => (
-                  <tr key={room.type}>
+                {hotels[selectedHotelIndex]?.roomTypes.map((room) => (
+                  <tr key={room.room_id}>
                     <td>{room.type}</td>
                     <td>${room.price}</td>
                     <td>{room.availability}</td>
                     <td>
-                      <button className="btn btn-warning" onClick={() => handleEditRoomType(room)}>Update</button>
-                      <button className="btn btn-danger" onClick={() => handleDeleteRoomType(room.type)}>Delete</button>
+                      <button
+                        className="btn btn-warning"
+                        onClick={() => handleEditRoomType(room)}
+                      >
+                        Update
+                      </button>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => handleDeleteRoomType(room.room_id)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -187,7 +471,17 @@ const HotelManagerDashboard = () => {
           {/* Keep the existing add-room-section exactly as is from Code A */}
           <div className="add-room-section">
             <h4>{editingRoomType ? "Edit Room Type" : "Add Room Type"}</h4>
-            <input type="text" placeholder="Type Name" value={newRoomType.type} onChange={(e) => setNewRoomType({ ...newRoomType, type: e.target.value })} />
+            <select
+              value={newRoomType.type}
+              onChange={(e) => setNewRoomType({ ...newRoomType, type: e.target.value })}
+              className="form-select"
+            >
+              <option value="">Select Room Type</option>
+              <option value="Deluxe">Deluxe</option>
+              <option value="Standard">Standard</option>
+              <option value="Suite">Suite</option>
+            </select>
+
             <input type="number" placeholder="Price" value={newRoomType.price} onChange={(e) => setNewRoomType({ ...newRoomType, price: e.target.value })} />
             <input type="number" placeholder="Availability" value={newRoomType.availability} onChange={(e) => setNewRoomType({ ...newRoomType, availability: e.target.value })} />
             <button className="btn btn-success" onClick={handleAddOrUpdateRoomType}>
@@ -216,6 +510,7 @@ const HotelManagerDashboard = () => {
             Add Hotel
           </button>
         </div>
+
       </div>
     ),
     manageBookings: (
@@ -225,30 +520,57 @@ const HotelManagerDashboard = () => {
           <thead>
             <tr>
               <th>Booking ID</th>
+              <th>Hotel ID</th>
+              <th>Room ID</th>
               <th>User Name</th>
-              <th>Room Type</th>
               <th>Check-in Date</th>
               <th>Check-out Date</th>
+              <th>Booking Status</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {bookings.map((booking) => (
-              <tr key={booking.id}>
-                <td>{booking.id}</td>
-                <td>{booking.user}</td>
-                <td>{booking.room}</td>
-                <td>{booking.checkIn}</td>
-                <td>{booking.checkOut}</td>
+            {bookings.map((b) => (
+              <tr key={b.id}>
+                <td>{b.booking_id}</td>
+                <td>{b.hotel_id}</td>
+                <td>{b.room_id}</td>
+                <td>{b.username}</td>
+                <td>{b.check_n_date}</td>
+                <td>{b.check_out_date}</td>
                 <td>
-                  <button className="btn btn-danger" onClick={() => handleCancelBooking(booking.id)}>Cancel</button>
+                  <span
+                    className={
+                      b.booking_status === "Confirmed"
+                        ? "confirmed"
+                        : "pendingg"
+                    }
+                  >
+                    {b.booking_status}
+                  </span>
+                </td>
+                <td>
+                  {b.booking_status !== "Confirmed" && (
+                    <button
+                      className="btn btn-warning"
+                      onClick={() => handleConfirmBooking(b.booking_id)}
+                    >
+                      Confirm
+                    </button>
+                  )}
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleDeleteBooking(b.booking_id)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    ),
+    ),    
   };
 
   const navigate = useNavigate();
