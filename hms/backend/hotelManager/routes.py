@@ -55,6 +55,11 @@ def delete_booking(booking_id):
 
     if not booking:
         return jsonify({"error": "Booking not found"}), 410 ####
+    
+    try:
+        room = Room.query.get(booking.room_id)
+        if room:
+            room.availability += 1
 
     db.session.delete(booking)
     db.session.flush()
