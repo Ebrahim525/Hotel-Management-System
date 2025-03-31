@@ -95,15 +95,10 @@ def cancel_booking(booking_id):
     if not booking:
         return jsonify({"error": "Booking not found!"}), 404
 
-    if booking.booking_status == "Cancelled":
-        return jsonify({"message": "Booking is already cancelled."})
-
-    if booking.check_in_date > datetime.now(timezone.utc).date():
-        booking.booking_status = "Cancelled"
-        db.session.commit()
-        return jsonify({"message": "Booking cancelled successfully!"})
-    else:
-        return jsonify({"error": "Cancellation not allowed after check-in date."}), 403
+    # Delete the booking completely from the database
+    db.session.delete(booking)
+    db.session.commit()
+    return jsonify({"message": "Booking cancelled and deleted successfully!"})
 
 
 # ------------------- Make a New Booking -------------------
@@ -159,12 +154,13 @@ def new_booking():
         hotel_id=hotel_id,
         check_in_date=check_in_date,
         check_out_date=check_out_date,
-        booking_status="Confirmed"
+        booking_status="Pending"  # Set status to Pending
     )
     db.session.add(new_booking)
     db.session.commit()
 
     return jsonify({"message": "Booking created successfully!", "booking_id": new_booking.id})
+
 
 # ------------------- Update Booking -------------------
 @user_bp.route('/booking/update/<int:booking_id>', methods=['PUT'])
@@ -229,8 +225,12 @@ def update_booking(booking_id):
     booking.check_in_date = new_check_in_date
     booking.check_out_date = new_check_out_date
 
+    # Set status to Pending after update
+    booking.booking_status = "Pending"
+
     db.session.commit()
     return jsonify({"message": "Booking updated successfully!"})
+
 
 # ------------------- Submit Booking Review -------------------
 @user_bp.route('/booking/review/<int:booking_id>', methods=['POST'])
