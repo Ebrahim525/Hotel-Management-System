@@ -12,7 +12,7 @@ const HotelManagerDashboard = () => {
   const [hotels, setHotels] = useState([]);
   const [selectedHotelIndex, setSelectedHotelIndex] = useState(0);
   const [newHotel, setNewHotel] = useState({ name: "", location: "" });
-  const [newRoomType, setNewRoomType] = useState({ type: "", price: "", availability: "" });
+  const [newRoomType, setNewRoomType] = useState({ type: "", price: "", capacity: "" });
   const [editingRoomType, setEditingRoomType] = useState(null);
 
 
@@ -76,7 +76,7 @@ const HotelManagerDashboard = () => {
               room_id: room.room_id,
               type: room.type,
               price: room.price,
-              availability: room.availability,
+              capacity: room.capacity,
             })),
           }));
   
@@ -97,7 +97,7 @@ const HotelManagerDashboard = () => {
 
 
   const handleAddOrUpdateRoomType = async () => {
-    if (!newRoomType.type || !newRoomType.price || !newRoomType.availability) {
+    if (!newRoomType.type || !newRoomType.price || !newRoomType.capacity) {
       alert("❌ Please fill all fields before submitting.");
       return;
     }
@@ -112,7 +112,7 @@ const HotelManagerDashboard = () => {
         hotel_id: hotels[selectedHotelIndex]?.id,
         room_type: newRoomType.type,
         price_per_night: Number(newRoomType.price),
-        availability: Number(newRoomType.availability),
+        capacity: Number(newRoomType.capacity),
       };
 
       // console.log("Request body being sent:", bodyData);
@@ -161,7 +161,7 @@ const HotelManagerDashboard = () => {
         );
   
         // Clear the form after adding/updating
-        setNewRoomType({ type: "", price: "", availability: "" });
+        setNewRoomType({ type: "", price: "", capacity: "" });
         setEditingRoomType(null);
       } else {
         alert(`❌ ${data.error}`);
@@ -268,7 +268,7 @@ const HotelManagerDashboard = () => {
 
 
   const handleCancelEdit = () => {
-    setNewRoomType({ type: "", price: "", availability: "" });
+    setNewRoomType({ type: "", price: "", capacity: "" });
     setEditingRoomType(null);
   };
 
@@ -438,7 +438,7 @@ const HotelManagerDashboard = () => {
                 <tr>
                   <th>Room Type</th>
                   <th>Price per Night</th>
-                  <th>Availability</th>
+                  <th>capacity</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -447,7 +447,7 @@ const HotelManagerDashboard = () => {
                   <tr key={room.room_id}>
                     <td>{room.type}</td>
                     <td>${room.price}</td>
-                    <td>{room.availability}</td>
+                    <td>{room.capacity}</td>
                     <td>
                       <button
                         className="btn btn-warning"
@@ -483,7 +483,7 @@ const HotelManagerDashboard = () => {
             </select>
 
             <input type="number" placeholder="Price" value={newRoomType.price} onChange={(e) => setNewRoomType({ ...newRoomType, price: e.target.value })} />
-            <input type="number" placeholder="Availability" value={newRoomType.availability} onChange={(e) => setNewRoomType({ ...newRoomType, availability: e.target.value })} />
+            <input type="number" placeholder="capacity" value={newRoomType.capacity} onChange={(e) => setNewRoomType({ ...newRoomType, capacity: e.target.value })} />
             <button className="btn btn-success" onClick={handleAddOrUpdateRoomType}>
               {editingRoomType ? "Save Changes" : "Add Room Type"}
             </button>

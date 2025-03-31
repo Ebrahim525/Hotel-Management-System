@@ -57,13 +57,12 @@ def delete_booking(booking_id):
         return jsonify({"error": "Booking not found"}), 410 ####
     
     try:
-        room = Room.query.get(booking.room_id)
-        if room:
-            room.availability += 1
+        db.session.delete(booking)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting booking: {e}")
 
-    db.session.delete(booking)
-    db.session.flush()
-    db.session.commit()
 
     return jsonify({"success": f"Booking {booking_id} deleted successfully"}), 200
 
@@ -207,7 +206,7 @@ def get_hotels():
                     "room_id": room.id,
                     "type": room.room_type,
                     "price": room.price_per_night,
-                    "availability": room.availability,
+                    "capacity": room.capacity,
                 }
                 for room in rooms
             ]
@@ -242,9 +241,9 @@ def add_room():
     hotel_id = data.get("hotel_id")
     room_type = data.get("room_type")
     price_per_night = data.get("price_per_night")
-    availability = data.get("availability")
+    capacity = data.get("capacity")
 
-    if not (hotel_id and room_type and price_per_night and availability):
+    if not (hotel_id and room_type and price_per_night and capacity):
         return jsonify({"error": "Missing required fields"}), 400
 
     try:
@@ -252,7 +251,7 @@ def add_room():
             hotel_id=hotel_id,
             room_type=room_type,
             price_per_night=price_per_night,
-            availability=availability,
+            capacity=capacity,
         )
         db.session.add(new_room)
         db.session.commit()
@@ -283,7 +282,7 @@ def edit_room(room_id):
     try:
         room.room_type = data.get("room_type", room.room_type)
         room.price_per_night = data.get("price_per_night", room.price_per_night)
-        room.availability = data.get("availability", room.availability)
+        room.capacity = data.get("capacity", room.capacity)
 
         db.session.commit()
         return jsonify({"success": "Room updated successfully!"})
