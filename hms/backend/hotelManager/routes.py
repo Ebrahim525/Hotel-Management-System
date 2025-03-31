@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt
 from models.models import User, Hotel, Room, Booking, Payment
-from app import db
+from models.models import db
 
 hotel_bp = Blueprint('hotel_bp', __name__)
 
@@ -56,10 +56,10 @@ def delete_booking(booking_id):
     if not booking:
         return jsonify({"error": "Booking not found"}), 410 ####
     
-    try:
-        room = Room.query.get(booking.room_id)
-        if room:
-            room.availability += 1
+    
+    room = Room.query.get(booking.room_id)
+    if room:
+        room.availability += 1
 
     db.session.delete(booking)
     db.session.flush()
