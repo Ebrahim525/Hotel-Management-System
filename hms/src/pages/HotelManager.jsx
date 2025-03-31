@@ -14,23 +14,22 @@ const HotelManagerDashboard = () => {
   const [newHotel, setNewHotel] = useState({ name: "", location: "" });
   const [newRoomType, setNewRoomType] = useState({ type: "", price: "", capacity: "" });
   const [editingRoomType, setEditingRoomType] = useState(null);
+  const [profile, setProfile] = useState({});
 
+useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const response = await axiosInstance.get(`/hotel/prof`);
+      console.log("Profile data from API:", response.data);  // Check what data is received
+      setProfile(response.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
 
-  const [profile, setProfile] = useState([]);
+  fetchProfile();
+}, []);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await axiosInstance.get("/hotel/profile");
-        console.log(response.data);
-        setProfile(response.data);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      }
-    };
-  
-    fetchProfile();
-  }, []);
   
 
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -417,7 +416,7 @@ const HotelManagerDashboard = () => {
             onChange={(e) => setSelectedHotelIndex(parseInt(e.target.value))}
           >
             {hotels.map((hotel, index) => (
-              <option key={index} value={index}>
+              <option key={hotel.id} value={index}>
                 {hotel.name} - {hotel.location}
               </option>
             ))}
@@ -531,7 +530,7 @@ const HotelManagerDashboard = () => {
           </thead>
           <tbody>
             {bookings.map((b) => (
-              <tr key={b.id}>
+              <tr key={b.booking_id}>
                 <td>{b.booking_id}</td>
                 <td>{b.hotel_id}</td>
                 <td>{b.room_id}</td>

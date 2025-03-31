@@ -127,7 +127,7 @@ def edit_username():
     return jsonify({"success": "User name updated successfully!"}), 200
 
 
-@hotel_bp.route('/profile', methods=['GET'])
+@hotel_bp.route('/prof', methods=['GET'])
 @jwt_required()
 def get_profile():
     claim = get_jwt()
@@ -136,11 +136,11 @@ def get_profile():
 
     if user_type != "Manager":
         return jsonify({"error": "Unauthorized action!"}), 403
+    
     user = User.query.get(user_id)
 
     if not user:
-        return jsonify({"error": "User not found!"}), 410
-
+        return jsonify({"error": "User not found!"}), 404
     user_data = {
         "user_id": user.id,
         "username": user.username,
@@ -148,6 +148,7 @@ def get_profile():
     }
 
     return jsonify(user_data), 200
+
 
 
 @hotel_bp.route('/add-hotel', methods=['POST'])
