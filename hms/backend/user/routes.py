@@ -17,7 +17,7 @@ def edit_profile():
 
     # Extract new data
     new_fullname = data.get('fullname')
-    new_email = data.get('email')
+    # new_email = data.get('email')  <-- No longer needed
 
     # Find the user
     user = User.query.filter_by(email=current_user_email).first()
@@ -27,19 +27,22 @@ def edit_profile():
     # Update profile data
     if new_fullname:
         user.username = new_fullname
-    if new_email:
-        existing_user = User.query.filter_by(email=new_email).first()
-        if existing_user and existing_user.id != user.id:
-            return jsonify({"error": "Email already exists!"}), 409
-        user.email = new_email
+
+    # Remove or comment out the email update block
+    # if new_email:
+    #     existing_user = User.query.filter_by(email=new_email).first()
+    #     if existing_user and existing_user.id != user.id:
+    #         return jsonify({"error": "Email already exists!"}), 409
+    #     user.email = new_email
 
     db.session.commit()
 
     return jsonify({
         "message": "Profile updated successfully!",
         "new_fullname": user.username,
-        "new_email": user.email
+        "new_email": user.email  # Display the email but don't update it
     })
+
 
 
 # ------------------- Get User Dashboard -------------------

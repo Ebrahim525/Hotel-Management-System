@@ -72,7 +72,6 @@ const BookNowModal = ({ show, onHide, onSubmit, hotel, room }) => {
   );
 };
 
-
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState("profile");
@@ -366,32 +365,30 @@ const UserDashboard = () => {
           </p>
           <p>
             <strong>Email Address:</strong>{" "}
-            {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                value={userProfile.email || ""}
-                onChange={handleProfileChange}
-                className="form-control form-control-sm"
-                style={inputStyle}
-              />
-            ) : (
-              userProfile.email
-            )}
+            {/* In edit mode, display as plain text rather than an input */}
+            {userProfile.email}
           </p>
           {isEditing ? (
-            <>
-              <button className="btn save-profile" onClick={saveProfileChanges}>
+            <div className="d-flex justify-content-center gap-2">
+              <button
+                className="btn btn-success save-profile"
+                onClick={saveProfileChanges}
+              >
                 Save
               </button>
-              <button className="btn cancel-profile" onClick={toggleEditProfile}>
+              <button
+                className="btn btn-danger cancel-profile"
+                onClick={toggleEditProfile}
+              >
                 Cancel
               </button>
-            </>
+            </div>
           ) : (
-            <button className="btn edit-profile" onClick={toggleEditProfile}>
-              Edit Profile
-            </button>
+            <div className="d-flex justify-content-center">
+              <button className="btn edit-profile" onClick={toggleEditProfile}>
+                Edit Profile
+              </button>
+            </div>
           )}
           {profileMessage && <p className="error-msg">{profileMessage}</p>}
         </div>
@@ -461,13 +458,13 @@ const UserDashboard = () => {
                     ) : editingBooking === booking.booking_id ? (
                       <>
                         <button
-                          className="btn submit-modification-btn"
+                          className="btn btn-primary submit-modification-btn"
                           onClick={() => handleSubmitModification(booking.booking_id)}
                         >
                           Submit Modification Request
                         </button>
                         <button
-                          className="btn cancel-edit-btn"
+                          className="btn btn-warning cancel-edit-btn"
                           onClick={() => setEditingBooking(null)}
                         >
                           Cancel
