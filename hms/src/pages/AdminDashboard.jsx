@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../services/axiosInstance";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AdminDashboard.css";
+import { useNavigate } from "react-router-dom";
+
 
 // DELETE HOTEL WILL DELETE ALL ROOMS ASSOCIATED
 
@@ -30,9 +32,19 @@ function AdminDashboard() {
     } catch (error) {
       console.error("Error:", error.response || error);
       setMessage("Failed to load user data. Please login again.");
+      // window.location.href  = "/";
     }
   };  
 
+  // useEffect(() => {
+  //   fetchUsers(userCurrentPage, userSearchQuery);
+  // }, [userCurrentPage, userSearchQuery]);
+
+  // const token = sessionStorage.getItem("token");
+  //   if (!token) {
+  //     navigate("/");
+  //   }
+  
   useEffect(() => {
     fetchUsers(userCurrentPage, userSearchQuery);
   }, [userCurrentPage, userSearchQuery]);
@@ -103,7 +115,7 @@ function AdminDashboard() {
       }
     };
 
-    fetchHotels();
+      Hotels();
   }, [currentPage, hotelSearchQuery]);
 
 
@@ -355,12 +367,20 @@ const handleDeleteHotel = async (id) => {
     ),
   };
 
+  const navigate = useNavigate();
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    sessionStorage.removeItem("token"); 
+    navigate("/");
+  };
+
   return (
     <div className="admin-dashboard">
       <div className="banner">
         <div>Hotel Management System</div>
-        <a href="/" className="home-btn">
-          Sign Out
+        <a href="#" className="home-btn" onClick={handleLogout}>
+          Logout
         </a>
       </div>
 

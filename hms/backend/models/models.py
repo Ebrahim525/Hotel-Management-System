@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Enum
 
 db = SQLAlchemy()
 
@@ -36,14 +37,14 @@ class Booking(db.Model):
     # Relationships
     payments = db.relationship('Payment', backref='booking', lazy=True, cascade="all, delete-orphan")
 
-
 # ----------------- Room Model -----------------
 class Room(db.Model):
     __tablename__ = 'room'
     id = db.Column(db.Integer, primary_key=True)
-    room_type = db.Column(db.String(50), nullable=False)
+    # Use SQLAlchemy's Enum type with fixed values
+    room_type = db.Column(Enum('Deluxe', 'Suite', 'Standard', name='room_types'), nullable=False)
     price_per_night = db.Column(db.Float, nullable=False)
-    availability = db.Column(db.Integer, default=True)
+    capacity = db.Column(db.Integer, nullable=False)  # Number of guests this room can accommodate
     date_uploaded = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     # Foreign key
@@ -51,7 +52,6 @@ class Room(db.Model):
 
     # Relationships
     bookings = db.relationship('Booking', backref='room', lazy=True, cascade="all, delete-orphan")
-
 
 # ----------------- Payment Model -----------------
 class Payment(db.Model):
