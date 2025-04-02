@@ -114,9 +114,9 @@ useEffect(() => {
         capacity: Number(newRoomType.capacity),
       };
 
-      // console.log("Request body being sent:", bodyData);
-      console.log("Selected hotel index:", selectedHotelIndex);
-      console.log("Selected hotel object:", hotels[selectedHotelIndex]);
+      console.log("Request body being sent:", bodyData);
+      // console.log("Selected hotel index:", selectedHotelIndex);
+      // console.log("Selected hotel object:", hotels[selectedHotelIndex]);
 
   
       // If editing an existing room
@@ -216,6 +216,8 @@ useEffect(() => {
       console.error("Error adding hotel:", error);
       alert("❌ An error occurred while adding the hotel.");
     }
+
+    window.location.reload();
   };
   
   
