@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models.models import db, User, Booking, Hotel, Room, Review
+from models.models import db, User, Booking, Hotel, Room, Review, Payment
 from datetime import datetime, timezone
 
 # Define allowed room types
@@ -73,6 +73,7 @@ def get_dashboard():
             "check_in": b.check_in_date.strftime('%Y-%m-%d'),
             "check_out": b.check_out_date.strftime('%Y-%m-%d'),
             "status": b.booking_status
+
         }
         for b in bookings
     ]
@@ -103,7 +104,7 @@ def cancel_booking(booking_id):
     return jsonify({"message": "Booking cancelled and deleted successfully!"})
 
 
-# ------------------- Make a New Booking -------------------
+# ------------------- Make a New Booking + Payment-------------------
 @user_bp.route('/booking/new', methods=['POST'])
 @jwt_required()
 def new_booking():
@@ -116,28 +117,31 @@ def new_booking():
     room_id = data.get("room_id")
     check_in = data.get("check_in")
     check_out = data.get("check_out")
-    
-    if not all([room_id, check_in, check_out]):
+    no_of_rooms = data.get("no_of_rooms")
+
+    if not all([room_id, check_in, check_out, no_of_rooms]):
         return jsonify({"error": "All fields are required!"}), 400
 
     room = Room.query.filter_by(id=room_id).first()
     if not room:
         return jsonify({"error": "Room not found!"}), 404
+    if no_of_rooms > room.capacity:
+        return jsonify({"error": f"Only {room.capacity} room(s) available!"}), 400
 
     hotel_id = room.hotel_id
 
-    # Ensure the hotel is approved before proceeding with booking
+    # Ensure the hotel is approved
     hotel = Hotel.query.filter_by(id=hotel_id).first()
-    if hotel and hotel.status not in ["Approved"]:
+    if not hotel or hotel.status != "Approved":
         return jsonify({"error": "Hotel is not approved for booking."}), 400
 
     try:
         check_in_date = datetime.strptime(check_in, '%Y-%m-%d').date()
         check_out_date = datetime.strptime(check_out, '%Y-%m-%d').date()
     except ValueError:
-        return jsonify({"error": "Invalid date format. Please use YYYY-MM-DD."}), 400
+        return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
     
-    # Ensure the check-in date is not in the past
+    # Ensure check-in date is valid
     today = datetime.utcnow().date()
     if check_in_date < today:
         return jsonify({"error": "Check-in date cannot be in the past."}), 400
@@ -145,6 +149,7 @@ def new_booking():
     if check_in_date >= check_out_date:
         return jsonify({"error": "Check-out date must be after check-in date."}), 400
 
+    # Check room availability
     existing_booking = Booking.query.filter(
         Booking.room_id == room.id,
         Booking.check_in_date < check_out_date,
@@ -154,19 +159,41 @@ def new_booking():
 
     if existing_booking:
         return jsonify({"error": "Room is already booked for the selected dates!"}), 400
+    
+    # Calculate total amount
+    num_nights = (check_out_date - check_in_date).days
+    total_amount = num_nights * room.price_per_night * no_of_rooms
 
+    room.capacity -= no_of_rooms
+    db.session.commit()
+
+    # Create booking (status "Pending" until payment is completed)
     new_booking = Booking(
         user_id=user.id,
         room_id=room.id,
         hotel_id=hotel_id,
         check_in_date=check_in_date,
         check_out_date=check_out_date,
-        booking_status="Pending"  # Set status to Pending
+        booking_status="Pending"
     )
     db.session.add(new_booking)
     db.session.commit()
 
-    return jsonify({"message": "Booking created successfully!", "booking_id": new_booking.id})
+    # Create payment record (status "Pending")
+    new_payment = Payment(
+        booking_id=new_booking.id,
+        amount_paid=total_amount,
+        payment_status="Completed"
+    )
+    db.session.add(new_payment)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Booking created successfully!", 
+        "booking_id": new_booking.id, 
+        "total_amt_paid": total_amount,
+        "payment_status": "Completed"
+    })
 
 # ------------------- Submit Booking Review -------------------
 @user_bp.route('/booking/review/<int:booking_id>', methods=['POST'])
@@ -188,6 +215,8 @@ def submit_review(booking_id):
 
     if booking.check_out_date > datetime.utcnow().date():
         return jsonify({"error": "You can only rate after check-out."}), 403
+
+
 
     new_review = Review(
         rating=rating,
@@ -290,4 +319,3 @@ def search_hotels():
         return jsonify({"message": "No available hotels match your criteria."}), 404
 
     return jsonify({"results": available_hotels})
-
