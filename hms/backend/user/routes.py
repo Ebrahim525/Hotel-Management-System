@@ -125,8 +125,8 @@ def new_booking():
     room = Room.query.filter_by(id=room_id).first()
     if not room:
         return jsonify({"error": "Room not found!"}), 404
-    if no_of_rooms > room.capacity:
-        return jsonify({"error": f"Only {room.capacity} room(s) available!"}), 400
+    if no_of_rooms > room.availability:
+        return jsonify({"error": f"Only {room.availability} room(s) available!"}), 400
 
     hotel_id = room.hotel_id
 
@@ -164,7 +164,7 @@ def new_booking():
     num_nights = (check_out_date - check_in_date).days
     total_amount = num_nights * room.price_per_night * no_of_rooms
 
-    room.capacity -= no_of_rooms
+    room.availability -= no_of_rooms
     db.session.commit()
 
     # Create booking (status "Pending" until payment is completed)
@@ -234,7 +234,7 @@ def submit_review(booking_id):
 def search_hotels():
     location = request.args.get('location', type=str)
     hotel_name = request.args.get('hotel_name', type=str)
-    required_capacity = request.args.get('guests', default=1, type=int)
+    required_availability = request.args.get('guests', default=1, type=int)
     check_in = request.args.get('check_in')
     check_out = request.args.get('check_out')
     min_price = request.args.get('min_price', type=float)
@@ -296,8 +296,8 @@ def search_hotels():
 
         free_rooms = free_rooms_query.all()
 
-        # Further filter based on capacity
-        matching_rooms = [room for room in free_rooms if room.capacity >= required_capacity]
+        # Further filter based on availability
+        matching_rooms = [room for room in free_rooms if room.availability >= required_availability]
 
         if matching_rooms:
             min_room_price = min(room.price_per_night for room in matching_rooms)
@@ -309,7 +309,7 @@ def search_hotels():
                 "rooms_available": [{
                     "room_id": room.id,
                     "room_type": room.room_type,
-                    "capacity": room.capacity,
+                    "availability": room.availability,
                     "price_per_night": room.price_per_night
                 } for room in matching_rooms],
                 "min_price": min_room_price

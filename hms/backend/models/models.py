@@ -44,7 +44,7 @@ class Room(db.Model):
     # Use SQLAlchemy's Enum type with fixed values
     room_type = db.Column(Enum('Deluxe', 'Suite', 'Standard', name='room_types'), nullable=False)
     price_per_night = db.Column(db.Float, nullable=False)
-    capacity = db.Column(db.Integer, nullable=False)  # Number of guests this room can accommodate
+    availability = db.Column(db.Integer, nullable=False)  # Number of guests this room can accommodate
     date_uploaded = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     # Foreign key
