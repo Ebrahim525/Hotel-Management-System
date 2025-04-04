@@ -17,13 +17,14 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-const BookNowModal = ({ show, onHide, onSubmit, hotel, room }) => {
+const BookNowModal = ({ show, onHide, onSubmit, hotel, room, defaultCheckIn, defaultCheckOut, defaultNoRoom }) => {
+  
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1); // Move to the next day
 
-  const [checkIn, setCheckIn] = useState(tomorrow);
-  const [checkOut, setCheckOut] = useState(new Date(tomorrow));
-  const [NoRoom, setNoRoom] = useState(1);
+  const [checkIn, setCheckIn] = useState(defaultCheckIn || new Date());
+  const [checkOut, setCheckOut] = useState(defaultCheckOut || new Date());
+  const [NoRoom, setNoRoom] = useState(defaultNoRoom || 1);
   const handleSubmit = () => {
     const formattedCheckIn = formatDate(checkIn);
     const formattedCheckOut = formatDate(checkOut);
@@ -88,6 +89,8 @@ const BookNowModal = ({ show, onHide, onSubmit, hotel, room }) => {
     </Modal>
   );
 };
+
+
 
 const UserDashboard = () => {
   const navigate = useNavigate();
@@ -154,7 +157,6 @@ const UserDashboard = () => {
 
   useEffect(() => {
     fetchUserDashboard();
-    fetchHotels({});
   }, []);
 
   // Profile editing handlers
@@ -162,6 +164,14 @@ const UserDashboard = () => {
     setUserProfile({ ...userProfile, [e.target.name]: e.target.value });
   };
 
+  const [searchDetails, setSearchDetails] = useState({
+    checkIn: "",
+    checkOut: "",
+    guests: ""
+  });
+
+  const [searchSubmitted, setSearchSubmitted] = useState(false);
+  
   const toggleEditProfile = () => {
     setIsEditing((prev) => !prev);
   };
@@ -288,26 +298,41 @@ const UserDashboard = () => {
   const handleSearch = () => {
     const checkIn = document.getElementById("checkIn").value;
     const checkOut = document.getElementById("checkOut").value;
+    const guests = document.getElementById("guests").value.trim();
+
+    const missingFields = [];
+    if (!checkIn) missingFields.push("Check-in Date");
+    if (!checkOut) missingFields.push("Check-out Date");
+    if (!guests) missingFields.push("Number of Rooms");
+    
+    if (missingFields.length > 0) {
+      alert(`The following entries are missing: ${missingFields.join(", ")}`);
+      setFilteredHotels([]);
+      return; // do not proceed with search
+    }
+
     const location = document.getElementById("location").value.trim();
     const hotelName = document.getElementById("hotelName").value.trim();
-    const guests = document.getElementById("guests").value.trim();
     const minPrice = document.getElementById("minPrice").value.trim();
     const maxPrice = document.getElementById("maxPrice").value.trim();
     const minRating = document.getElementById("minRating").value.trim();
     // For roomType, get the value from the select
     const roomType = document.getElementById("roomType").value;
 
-    let params = {};
-    if (checkIn) params.check_in = checkIn;
-    if (checkOut) params.check_out = checkOut;
+    let params = {
+      check_in: checkIn,
+      check_out: checkOut,
+      guests,
+    };
     if (location) params.location = location;
-    if (guests) params.guests = guests;
     if (minPrice) params.min_price = minPrice;
     if (maxPrice) params.max_price = maxPrice;
     if (minRating) params.min_rating = minRating;
     if (hotelName) params.hotel_name = hotelName;
     if (roomType !== "") params.room_type = roomType;
 
+    setSearchDetails({ checkIn, checkOut, guests });
+    setSearchSubmitted(true);
     fetchHotels(params);
   };
 
@@ -317,6 +342,7 @@ const UserDashboard = () => {
       alert("No room available for the selected availability.");
       return;
     }
+    
     setSelectedHotel(hotel);
     setSelectedRoom(room);
     setShowBookModal(true);
@@ -627,6 +653,7 @@ const UserDashboard = () => {
                 className="form-control form-control-sm"
                 id="checkIn"
                 placeholder="Check-in Date (optional)"
+                required
                 min={new Date().toISOString().split("T")[0]} // prevents past dates
               />
               <label htmlFor="checkIn">Check-in</label>
@@ -637,6 +664,7 @@ const UserDashboard = () => {
                 className="form-control form-control-sm"
                 id="checkOut"
                 placeholder="Check-out Date (optional)"
+                required
                 min={new Date().toISOString().split("T")[0]} // could be improved further based on check-in
               />
               <label htmlFor="checkOut">Check-out</label>
@@ -675,6 +703,7 @@ const UserDashboard = () => {
                 className="form-control form-control-sm"
                 id="minPrice"
                 placeholder="Min Price (optional)"
+                required
               />
               <label htmlFor="minPrice">Min Price</label>
             </div>
@@ -716,7 +745,10 @@ const UserDashboard = () => {
             </button>
           </div>
         </div>
-        {flatRooms.length > 0 ? (
+        {!searchSubmitted && (
+          <p>Please enter your search criteria to find available hotels.</p>
+        )}
+        {searchSubmitted && flatRooms.length > 0 ? (
           <div className="search-results">
             <h3>Search Results</h3>
             <table className="table">
@@ -795,6 +827,9 @@ const UserDashboard = () => {
           hotel={selectedHotel}
           room={selectedRoom}
           onSubmit={submitBooking}
+          defaultCheckIn={searchDetails.checkIn ? new Date(searchDetails.checkIn) : undefined}
+          defaultCheckOut={searchDetails.checkOut ? new Date(searchDetails.checkOut) : undefined}
+          defaultNoRoom={searchDetails.guests || 1}
         />
       )}
     </div>
@@ -802,4 +837,3 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
-
