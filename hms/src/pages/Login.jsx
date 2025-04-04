@@ -24,6 +24,16 @@ function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const updateRoomBooking = async () => {
+    console.log("Working");
+    try {
+      const response2 = await axios.put('http://127.0.0.1:5000/updateRoomBooking');
+      console.log(response2.data.message);
+    } catch (error2) {
+      console.error("Error updating past bookings:", error2);
+    }
+  };
+
   // Handle Login/Register
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,6 +66,9 @@ function Login() {
           // console.log(response.data);
           // Redirect to user dashboard
           // console.log(response.data.redirect_url);
+          console.log("Working0");
+          await updateRoomBooking();
+          console.log("Working2");
           window.location.href = response.data.redirect_url;
         } else {
           alert("Invalid email or password.");

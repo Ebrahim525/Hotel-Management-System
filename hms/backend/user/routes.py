@@ -97,6 +97,12 @@ def cancel_booking(booking_id):
     booking = Booking.query.filter_by(id=booking_id, user_id=user.id).first()
     if not booking:
         return jsonify({"error": "Booking not found!"}), 404
+    
+    room = Room.query.filter_by(id=booking.room_id).first()
+    if room:
+        room.availability += booking.noOfRooms
+    else:
+         return jsonify({"error": "Room not found!"}), 404
 
     # Delete the booking completely from the database
     db.session.delete(booking)
@@ -119,13 +125,15 @@ def new_booking():
     check_out = data.get("check_out")
     no_of_rooms = data.get("no_of_rooms")
 
+    print("Room_ID: ", room_id, " NO Rooms: ", no_of_rooms);
+
     if not all([room_id, check_in, check_out, no_of_rooms]):
         return jsonify({"error": "All fields are required!"}), 400
 
     room = Room.query.filter_by(id=room_id).first()
     if not room:
         return jsonify({"error": "Room not found!"}), 404
-    if no_of_rooms > room.availability:
+    if int(no_of_rooms) > room.availability:
         return jsonify({"error": f"Only {room.availability} room(s) available!"}), 400
 
     hotel_id = room.hotel_id
@@ -162,9 +170,9 @@ def new_booking():
     
     # Calculate total amount
     num_nights = (check_out_date - check_in_date).days
-    total_amount = num_nights * room.price_per_night * no_of_rooms
+    total_amount = num_nights * room.price_per_night * int(no_of_rooms)
 
-    room.availability -= no_of_rooms
+    room.availability -= int(no_of_rooms)
     db.session.commit()
 
     # Create booking (status "Pending" until payment is completed)
@@ -174,7 +182,8 @@ def new_booking():
         hotel_id=hotel_id,
         check_in_date=check_in_date,
         check_out_date=check_out_date,
-        booking_status="Pending"
+        booking_status="Pending",
+        noOfRooms=no_of_rooms
     )
     db.session.add(new_booking)
     db.session.commit()

@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt
 from models.models import User, Hotel, Room, Booking, Payment
 from models.models import db
+from datetime import datetime
 
 hotel_bp = Blueprint('hotel_bp', __name__)
 
@@ -59,7 +60,7 @@ def delete_booking(booking_id):
     
     room = Room.query.get(booking.room_id)
     if room:
-        room.capacity += 1
+        room.availability += booking.noOfRooms
 
     db.session.delete(booking)
     db.session.flush()
@@ -208,7 +209,7 @@ def get_hotels():
                     "room_id": room.id,
                     "type": room.room_type,
                     "price": room.price_per_night,
-                    "capacity": room.capacity,
+                    "availability": room.availability,
                 }
                 for room in rooms
             ]
@@ -243,9 +244,9 @@ def add_room():
     hotel_id = data.get("hotel_id")
     room_type = data.get("room_type")
     price_per_night = data.get("price_per_night")
-    capacity = data.get("capacity")
+    availability = data.get("availability")
 
-    if not (hotel_id and room_type and price_per_night and capacity):
+    if not (hotel_id and room_type and price_per_night and availability):
         return jsonify({"error": "Missing required fields"}), 400
 
     try:
@@ -253,7 +254,7 @@ def add_room():
             hotel_id=hotel_id,
             room_type=room_type,
             price_per_night=price_per_night,
-            capacity=capacity,
+            availability=availability,
         )
         db.session.add(new_room)
         db.session.commit()
@@ -284,7 +285,7 @@ def edit_room(room_id):
     try:
         room.room_type = data.get("room_type", room.room_type)
         room.price_per_night = data.get("price_per_night", room.price_per_night)
-        room.capacity = data.get("capacity", room.capacity)
+        room.availability = data.get("availability", room.availability)
 
         db.session.commit()
         return jsonify({"success": "Room updated successfully!"})

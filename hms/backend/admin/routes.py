@@ -71,24 +71,15 @@ def remove_user(user_id):
 
     if not user:
         return jsonify({"error": "User not found."}), 404
-    
-    # if(user.usertype == "Manager"):
-    #     hotels_to_delete = Hotel.query.filter_by(owner_id=user_id).all()
 
-    #     for hotel in hotels_to_delete:
-    #         Booking.query.filter_by(hotel_id=hotel.id).delete()
-    #         Room.query.filter_by(hotel_id=hotel.id).delete()
-    #         Review.query.filter_by(hotel_id=hotel.id).delete()
-    #         db.session.delete(hotel)
-    
-    # if(user.usertype == "Guest"):
-    #     Review.query.filter_by(user_id=user_id).delete()
-    #     guest_bookings = Booking.query.filter_by(user_id=user_id).all()
+    today = datetime.today().date()
+    bookings = Booking.query.filter(Booking.user_id == user_id, Booking.flag == 0).all()
 
-    #     for booking in guest_bookings:
-    #         Payment.query.filter_by(booking_id=booking.id).delete()
-    #     Booking.query.filter_by(user_id=user_id).delete()
-
+    for booking in bookings:
+        room = Room.query.get(booking.room_id)
+        if room:
+            room.availability += booking.noOfRooms  # Restore room capacity
+        booking.flag = 1  # Mark booking as processed
 
     db.session.delete(user)
     db.session.flush()

@@ -12,7 +12,7 @@ const HotelManagerDashboard = () => {
   const [hotels, setHotels] = useState([]);
   const [selectedHotelIndex, setSelectedHotelIndex] = useState(0);
   const [newHotel, setNewHotel] = useState({ name: "", location: "" });
-  const [newRoomType, setNewRoomType] = useState({ type: "", price: "", capacity: "" });
+  const [newRoomType, setNewRoomType] = useState({ type: "", price: "", availability: "" });
   const [editingRoomType, setEditingRoomType] = useState(null);
   const [profile, setProfile] = useState({});
 
@@ -75,7 +75,7 @@ useEffect(() => {
               room_id: room.room_id,
               type: room.type,
               price: room.price,
-              capacity: room.capacity,
+              availability: room.availability,
             })),
           }));
   
@@ -96,7 +96,7 @@ useEffect(() => {
 
 
   const handleAddOrUpdateRoomType = async () => {
-    if (!newRoomType.type || !newRoomType.price || !newRoomType.capacity) {
+    if (!newRoomType.type || !newRoomType.price || !newRoomType.availability) {
       alert("❌ Please fill all fields before submitting.");
       return;
     }
@@ -111,7 +111,7 @@ useEffect(() => {
         hotel_id: hotels[selectedHotelIndex]?.id,
         room_type: newRoomType.type,
         price_per_night: Number(newRoomType.price),
-        capacity: Number(newRoomType.capacity),
+        availability: Number(newRoomType.availability),
       };
 
       console.log("Request body being sent:", bodyData);
@@ -160,7 +160,7 @@ useEffect(() => {
         );
   
         // Clear the form after adding/updating
-        setNewRoomType({ type: "", price: "", capacity: "" });
+        setNewRoomType({ type: "", price: "", availability: "" });
         setEditingRoomType(null);
       } else {
         alert(`❌ ${data.error}`);
@@ -269,7 +269,7 @@ useEffect(() => {
 
 
   const handleCancelEdit = () => {
-    setNewRoomType({ type: "", price: "", capacity: "" });
+    setNewRoomType({ type: "", price: "", availability: "" });
     setEditingRoomType(null);
   };
 
@@ -439,7 +439,7 @@ useEffect(() => {
                 <tr>
                   <th>Room Type</th>
                   <th>Price per Night</th>
-                  <th>capacity</th>
+                  <th>Availability</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -448,7 +448,7 @@ useEffect(() => {
                   <tr key={room.room_id}>
                     <td>{room.type}</td>
                     <td>${room.price}</td>
-                    <td>{room.capacity}</td>
+                    <td>{room.availability}</td>
                     <td>
                       <button
                         className="btn btn-warning"
@@ -484,7 +484,7 @@ useEffect(() => {
             </select>
 
             <input type="number" placeholder="Price" value={newRoomType.price} onChange={(e) => setNewRoomType({ ...newRoomType, price: e.target.value })} />
-            <input type="number" placeholder="capacity" value={newRoomType.capacity} onChange={(e) => setNewRoomType({ ...newRoomType, capacity: e.target.value })} />
+            <input type="number" placeholder="availability" value={newRoomType.availability} onChange={(e) => setNewRoomType({ ...newRoomType, availability: e.target.value })} />
             <button className="btn btn-success" onClick={handleAddOrUpdateRoomType}>
               {editingRoomType ? "Save Changes" : "Add Room Type"}
             </button>
@@ -537,7 +537,7 @@ useEffect(() => {
                 <td>{b.hotel_id}</td>
                 <td>{b.room_id}</td>
                 <td>{b.username}</td>
-                <td>{b.check_n_date}</td>
+                <td>{b.check_in_date}</td>
                 <td>{b.check_out_date}</td>
                 <td>
                   <span

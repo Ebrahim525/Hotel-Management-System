@@ -7,7 +7,8 @@ from flask_jwt_extended import (
     JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
 )
 
-from models.models import db, User
+from models.models import db, User, Booking, Room
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -110,6 +111,25 @@ def guest_dashboard():
         return jsonify({"message": "Welcome to the Guest Dashboard!"})
     return jsonify({"error": "Unauthorized access!"}), 403
 
+
+@app.route('/updateRoomBooking', methods=['PUT'])
+def update_room_booking():
+    today = datetime.today().date()
+    bookings = Booking.query.filter(Booking.flag == 0, Booking.check_out_date <= today).all()
+
+
+    if not bookings:
+        return jsonify({"message": "No past bookings to update."})
+
+    for booking in bookings:
+        room = Room.query.get(booking.room_id)
+        if room:
+            room.availability += booking.noOfRooms  # Increase available rooms
+        booking.flag = 1  # Mark booking as processed
+
+    db.session.commit()  # Save changes to DB
+
+    return jsonify({"message": f"Updated {len(bookings)} past bookings successfully!"})
 
 # Run the app
 if __name__ == "__main__":

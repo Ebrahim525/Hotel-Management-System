@@ -23,12 +23,16 @@ const BookNowModal = ({ show, onHide, onSubmit, hotel, room }) => {
 
   const [checkIn, setCheckIn] = useState(tomorrow);
   const [checkOut, setCheckOut] = useState(new Date(tomorrow));
-
+  const [NoRoom, setNoRoom] = useState(1);
   const handleSubmit = () => {
     const formattedCheckIn = formatDate(checkIn);
     const formattedCheckOut = formatDate(checkOut);
-    onSubmit(formattedCheckIn, formattedCheckOut);
+    onSubmit(formattedCheckIn, formattedCheckOut, NoRoom);
     onHide();
+  };
+
+  const handleRoomChange = (event) => {
+    setNoRoom(event.target.value); // Updates state when input changes
   };
 
   return (
@@ -59,6 +63,19 @@ const BookNowModal = ({ show, onHide, onSubmit, hotel, room }) => {
             minDate={checkIn}  // Check-out must be after check-in
           />
         </div>
+                
+        <div className="mb-3">
+          <label className="form-label" htmlFor="idkk">Number of Rooms Required:</label>
+          <input 
+            type='number' 
+            id="idkk" 
+            className="form-control form-control-sm"
+            value={NoRoom} 
+            onChange={handleRoomChange} 
+            min="1"
+          />
+        </div>
+        
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
@@ -117,6 +134,16 @@ const UserDashboard = () => {
         (b) => b.check_out >= today && b.status !== "Cancelled"
       );
       const past = allBookings.filter((b) => b.check_out < today);
+
+      if (past.length > 0) {
+        try {
+          const response = await axiosInstance.put('/booking/update-past-bookings');
+          console.log(response.data.message);
+        } catch (error) {
+          console.error("Error updating past bookings:", error);
+        }
+      }
+
       setActiveBookings(active);
       setBookingHistory(past);
     } catch (error) {
@@ -190,6 +217,7 @@ const UserDashboard = () => {
       try {
         await axiosInstance.delete(`/user/booking/cancel/${bookingId}`);
         fetchUserDashboard();
+        window.location.reload();
         alert("Booking cancelled and deleted successfully!");
       } catch (error) {
         console.error("Error cancelling booking:", error.response || error);
@@ -286,7 +314,7 @@ const UserDashboard = () => {
   // Booking handler to open the booking modal.
   const handleBook = (hotel, room) => {
     if (!room) {
-      alert("No room available for the selected capacity.");
+      alert("No room available for the selected availability.");
       return;
     }
     setSelectedHotel(hotel);
@@ -295,18 +323,20 @@ const UserDashboard = () => {
   };
 
   // Submit booking from modal.
-  const submitBooking = (checkInDate, checkOutDate) => {
+  const submitBooking = (checkInDate, checkOutDate, NoRoom) => {
     axiosInstance
       .post("/user/booking/new", {
         room_id: selectedRoom.room_id,
         check_in: checkInDate,
         check_out: checkOutDate,
+        no_of_rooms: NoRoom
       })
       .then((response) => {
         alert(
           `Booking created successfully! (Status set to Pending) for ${selectedHotel.hotel_name} (${selectedRoom.room_type}) from ${checkInDate} to ${checkOutDate}!`
         );
         fetchUserDashboard();
+        window.location.reload();
       })
       .catch((error) => {
         alert("Booking failed: " + error.response.data.error);
@@ -333,7 +363,7 @@ const UserDashboard = () => {
           rating: hotel.rating,
           room_id: room.room_id,
           room_type: room.room_type,
-          capacity: room.capacity,
+          availability: room.availability,
           price_per_night: room.price_per_night,
         });
       });
@@ -459,27 +489,27 @@ const UserDashboard = () => {
                       <span>Cancellation Request Sent</span>
                     ) : editingBooking === booking.booking_id ? (
                       <>
-                        <button
+                        {/* <button
                           className="btn btn-primary submit-modification-btn"
                           onClick={() => handleSubmitModification(booking.booking_id)}
                         >
                           Submit Modification Request
-                        </button>
-                        <button
+                        </button> */}
+                        {/* <button
                           className="btn btn-warning cancel-edit-btn"
                           onClick={() => setEditingBooking(null)}
                         >
                           Cancel
-                        </button>
+                        </button> */}
                       </>
                     ) : (
                       <>
-                        <button
+                        {/* <button
                           className="btn modify-btn"
                           onClick={() => handleModifyClick(booking)}
                         >
                           Modify
-                        </button>{" "}
+                        </button>{" "} */}
                         <button
                           className="btn cancel-booking-btn"
                           onClick={() => handleCancelBooking(booking.booking_id)}
@@ -637,7 +667,7 @@ const UserDashboard = () => {
                 placeholder="Guests (optional)"
                 min="1"
               />
-              <label htmlFor="guests">Guests</label>
+              <label htmlFor="guests">No. Rooms</label>
             </div>
             <div className="form-floating mb-2" style={inputStyle}>
               <input
@@ -695,7 +725,7 @@ const UserDashboard = () => {
                   <th>Hotel Name</th>
                   <th>Location</th>
                   <th>Room Type</th>
-                  <th>Capacity</th>
+                  <th>Availability</th>
                   <th>Price</th>
                   <th>Rating</th>
                   <th>Action</th>
@@ -707,7 +737,7 @@ const UserDashboard = () => {
                     <td>{room.hotel_name}</td>
                     <td>{room.location}</td>
                     <td>{room.room_type}</td>
-                    <td>{room.capacity}</td>
+                    <td>{room.availability}</td>
                     <td>{room.price_per_night}</td>
                     <td>{room.rating}</td>
                     <td>

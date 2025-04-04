@@ -28,6 +28,8 @@ class Booking(db.Model):
     date_booked = db.Column(db.DateTime, default=db.func.current_timestamp())
     check_in_date = db.Column(db.Date)
     check_out_date = db.Column(db.Date)
+    noOfRooms = db.Column(db.Integer, nullable=False)
+    flag = db.Column(db.Integer, default=0)
 
     # Foreign keys
     room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
