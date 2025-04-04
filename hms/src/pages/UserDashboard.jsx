@@ -466,9 +466,8 @@ const UserDashboard = () => {
           <table className="table">
             <thead>
               <tr>
-                <th>Hotel</th>
-                <th>Room</th>
-                <th>Type</th>
+                <th>Hotel ID</th>
+                <th>Room ID</th>
                 <th>Check-in</th>
                 <th>Check-out</th>
                 <th>Status</th>
@@ -480,7 +479,6 @@ const UserDashboard = () => {
                 <tr key={booking.booking_id}>
                   <td>{booking.hotel_id}</td>
                   <td>{booking.room_id}</td>
-                  <td>{booking.room_type}</td>
                   <td>
                     {editingBooking === booking.booking_id ? (
                       <input

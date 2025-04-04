@@ -95,3 +95,4 @@ class Hotel(db.Model):
     # Relationships
     rooms = db.relationship('Room', backref='hotel', cascade="all, delete-orphan")
     reviews = db.relationship('Review', backref='hotel', cascade="all, delete-orphan")
+    # bookings = db.relationship('Booking', backref='hotel', lazy=True, cascade="all, delete-orphan")

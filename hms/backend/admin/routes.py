@@ -78,8 +78,8 @@ def remove_user(user_id):
     for booking in bookings:
         room = Room.query.get(booking.room_id)
         if room:
-            room.availability += booking.noOfRooms  # Restore room capacity
-        booking.flag = 1  # Mark booking as processed
+            # room.availability += booking.noOfRooms  # Restore room capacity
+            booking.flag = 1  # Mark booking as processed
 
     db.session.delete(user)
     db.session.flush()
