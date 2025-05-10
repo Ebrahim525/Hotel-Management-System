@@ -1,20 +1,22 @@
-  import { useState } from 'react';
-  import reactLogo from './assets/react.svg';
-  import viteLogo from '/vite.svg';
-  import './App.css';
-  import AdminDashboard from './pages/AdminDashboard';
-  import Login from './pages/Login';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import './App.css';
+import PrivateRoute from './component/ProtectedRoute';
+import AdminDashboard from './pages/AdminDashboard';
+import GuestDashboard from './pages/UserDashboard';
+import HotelManagerDashboard from './pages/HotelManager';
+import Login from './pages/Login';
 
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/admin" element={<PrivateRoute element={<AdminDashboard />} />} />
+        <Route path="/manager" element={<PrivateRoute element={<HotelManagerDashboard />} />} />
+        <Route path="/guest" element={<PrivateRoute element={<GuestDashboard />} />} />
+      </Routes>
+    </Router>
+  );
+}
 
-  function App() {
-    const [count, setCount] = useState(0)
-
-    return (
-      <>
-        {/* <Login /> */}
-        <AdminDashboard />
-      </>
-    )
-  }
-
-  export default App
+export default App;
